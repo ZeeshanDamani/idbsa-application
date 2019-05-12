@@ -4,7 +4,6 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.CharacterEncodingFilter;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.multipart.support.MultipartFilter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -79,14 +78,5 @@ public class SpringWebMVCConfiguration extends WebMvcConfigurerAdapter {
         resolver.setSuffix(".jsp");
         resolver.setViewClass(JstlView.class);
         return resolver;
-    }
-
-    @Bean
-    public CommonsMultipartResolver commonsMultipartResolver() {
-        final CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
-        commonsMultipartResolver.setMaxUploadSize(20971520);
-        commonsMultipartResolver.setMaxInMemorySize(1048576);
-
-        return commonsMultipartResolver;
     }
 }
