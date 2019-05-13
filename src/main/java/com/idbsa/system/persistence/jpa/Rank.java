@@ -1,6 +1,7 @@
 package com.idbsa.system.persistence.jpa;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.idbsa.system.persistence.jpa.BaseEntity.NamedEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Data
 @Entity(name = "rank")
@@ -24,4 +27,9 @@ public class Rank extends NamedEntity {
 
     @Column(name = "is_active")
     private boolean isActive;
+
+    @JoinColumn(name = "section_id")
+    @ManyToOne
+    @JsonBackReference
+    private Section section;
 }

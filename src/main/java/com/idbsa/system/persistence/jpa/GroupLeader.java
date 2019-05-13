@@ -13,20 +13,21 @@ import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 import java.time.Period;
 
-@Entity(name = "scout_leader")
+@Entity(name = "group_leader")
 @ToString
 @EqualsAndHashCode
 @Setter
 @Getter
+@Builder
 @NoArgsConstructor
-public class ScoutLeader extends BaseEntity {
+@AllArgsConstructor
+public class GroupLeader extends BaseEntity {
 
-    @Column(name="full_name")
-    private String fullName;
+    @Column(name="name")
+    private String name;
 
     @Column(name = "father_name")
     private String fatherName;
-
 
     @Column(name = "mobile_number")
     private String mobileNumber;
@@ -36,28 +37,41 @@ public class ScoutLeader extends BaseEntity {
     @JsonBackReference
     private Group group;
 
-    @Column(name = "scout_qualification")
-    private String scoutQualification;
+    @JoinColumn(name = "scout_qualification_id")
+    @ManyToOne
+    private RankBadge scoutQualification;
 
     @Column(name = "date_of_joining")
     private String dateOfJoining;
 
+    @Column(name = "date_of_birth")
+    private String dateOfBirth;
+
     @Column(name = "cnic")
     private String cnic;
 
-    @Column(name = "rank")
-    private String leaderRank;
+    @JoinColumn(name = "rank_id")
+    @ManyToOne
+    private Rank leaderRank;
 
     @Column(name = "is_active")
     private boolean isActive;
 
-    @Column(name = "leader_qualificaiton")
-    private Integer leaderQualificaiton;
+    @JoinColumn(name = "leader_qualification_id")
+    @ManyToOne
+    private LeaderBadge leaderQualification;
 
-    //:TODO: Add last Qualification date and certification number
-    @Column(name = "leader_qualificaiton_cert_no")
-    private Integer lastQualificationCertNumber;
+    @Column(name = "leader_qualification_cert_no")
+    private Integer leaderQualificationCertNumber;
 
+    @Column(name = "gr_number")
+    private Integer leaderGrNumber;
+
+    @Column(name = "home_address")
+    private String homeAddress;
+
+    @Column(name = "age")
+    private Integer age;
 
     public static boolean validateCnic(String cnic) {
         if (StringUtils.hasLength(cnic) &&

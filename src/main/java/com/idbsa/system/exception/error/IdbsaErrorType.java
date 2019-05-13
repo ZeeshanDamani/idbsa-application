@@ -5,7 +5,8 @@ import org.springframework.http.HttpStatus;
 public enum IdbsaErrorType {
 
     DISTRICT_NOT_FOUND(1, "Invalid District Id"),
-    JURISDICTION_NOT_FOUND(2, "Invalid Jurisdiction Id");
+    JURISDICTION_NOT_FOUND(2, "Invalid Jurisdiction Id"),
+    GROUP_LEADER_NOT_FOUND(3, "Invalid Group Leader Id");
 
     private int code;
     private String errorMessage;
