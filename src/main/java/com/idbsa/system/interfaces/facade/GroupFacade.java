@@ -3,6 +3,7 @@ package com.idbsa.system.interfaces.facade;
 import com.idbsa.system.exception.ApplicationException;
 import com.idbsa.system.exception.error.IdbsaErrorType;
 import com.idbsa.system.interfaces.rest.dto.GroupDto;
+import com.idbsa.system.interfaces.rest.dto.GroupSummaryDto;
 import com.idbsa.system.interfaces.rest.dto.GroupUpdateDto;
 import com.idbsa.system.persistence.jpa.District;
 import com.idbsa.system.persistence.jpa.Group;
@@ -33,6 +34,10 @@ public class GroupFacade {
 
     public Group getGroupById(Integer groupId){
         return groupService.findById(groupId);
+    }
+
+    public GroupSummaryDto getSummaryByGroupId(Integer groupId){
+        return groupService.getGroupSummary(groupId);
     }
 
 

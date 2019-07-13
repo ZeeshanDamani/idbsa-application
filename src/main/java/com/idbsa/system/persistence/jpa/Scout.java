@@ -16,7 +16,7 @@ import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 import java.time.Period;
 
-@Entity(name = "scout")
+@Entity(name = "scouts")
 @ToString
 @EqualsAndHashCode
 @Setter
@@ -30,7 +30,7 @@ public class Scout extends BaseEntity {
     @Column(name = "father_name")
     private String fatherName;
 
-    @Column(name = "address")
+    @Column(name = "home_address")
     private String address;
 
     @Column(name = "home_contact")
@@ -41,6 +41,7 @@ public class Scout extends BaseEntity {
 
     @JoinColumn(name = "section_id")
     @ManyToOne
+    @JsonBackReference
     private Section section;
 
     @JoinColumn(name = "group_id")
@@ -48,8 +49,10 @@ public class Scout extends BaseEntity {
     @JsonBackReference
     private Group group;
 
-    @Column(name = "scout_qualification")
-    private String scoutQualification;
+    @JoinColumn(name = "last_scout_qualification_id")
+    @ManyToOne
+    @JsonBackReference
+    private RankBadge scoutQualification;
 
     @Column(name = "date_of_joining")
     private String dateOfJoining;
@@ -60,11 +63,29 @@ public class Scout extends BaseEntity {
     @Column(name = "date_of_birth")
     private String dateOfBirth;
 
+    @Column(name = "date_of_transfer")
+    private String transferDate;
+
     @Column(name = "is_active")
     private boolean isActive;
 
+    @Column(name = "created_at")
+    private Long creationTime;
+
+    @Column(name = "updated_at")
+    private Long updatedTime;
+
     @Column(name = "age")
     private int age;
+
+    @Column(name = "blood_group")
+    private String bloodGroup;
+
+    @Column(name="nic_image_url")
+    private String nicImageUrl;
+
+    @Column(name="socut_image_url")
+    private String scoutImageUrl;
 
     public static boolean validateCnic(String cnic) {
         if (StringUtils.hasLength(cnic) &&
@@ -101,17 +122,17 @@ public class Scout extends BaseEntity {
     }
 
 
-    public static Integer calculateAgeByFormat(String dateOfBirth) {
 
+    public  Integer calculateAgeByFormat() {
         //format should be dd/mm/yyyy
-        String[] ddmmyyyFormat = dateOfBirth.split("/");
+        String[] ddmmyyyFormat = this.dateOfBirth.split("/");
         LocalDate birthDate = LocalDate.of(Integer.parseInt(ddmmyyyFormat[2]), Integer.parseInt(ddmmyyyFormat[1]),
                 Integer.parseInt(ddmmyyyFormat[0]));
-        int age = calculateAge(birthDate);
+        this.age = calculateAge(birthDate);
         return age;
     }
 
-    public static int calculateAge(LocalDate birthDate) {
+    public  int calculateAge(LocalDate birthDate) {
         if ((birthDate != null)) {
             return Period.between(birthDate, LocalDate.now()).getYears();
         } else {

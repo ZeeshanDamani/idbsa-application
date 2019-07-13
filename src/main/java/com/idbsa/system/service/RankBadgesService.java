@@ -20,4 +20,8 @@ public class RankBadgesService {
     public RankBadge findById(Integer rankBadgeId){
         return rankBadgesRepository.findOne(rankBadgeId);
     }
+
+    public List<RankBadge> getBySectionId(Integer sectionId){
+        return  rankBadgesRepository.findBySectionId(sectionId);
+    }
 }

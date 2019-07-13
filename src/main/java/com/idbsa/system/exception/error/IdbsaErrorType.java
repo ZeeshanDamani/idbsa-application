@@ -6,7 +6,12 @@ public enum IdbsaErrorType {
 
     DISTRICT_NOT_FOUND(1, "Invalid District Id"),
     JURISDICTION_NOT_FOUND(2, "Invalid Jurisdiction Id"),
-    GROUP_LEADER_NOT_FOUND(3, "Invalid Group Leader Id");
+    GROUP_LEADER_NOT_FOUND(3, "Invalid Group Leader Id"),
+    RANK_NOT_FOUND(4, "Invalid Rank Id"),
+    LEADER_QUALIFICATION_NOT_FOUND(4, "Invalid Leader Qualification Id"),
+    SCOUT_QUALIFICATION_NOT_FOUND(4, "Invalid Scout Qualification Id"),
+    ENTITY_NOT_FOUND(4, "Invalid Id");
+
 
     private int code;
     private String errorMessage;

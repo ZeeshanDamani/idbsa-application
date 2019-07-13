@@ -5,14 +5,20 @@ import com.idbsa.system.exception.ApplicationException;
 import com.idbsa.system.exception.error.IdbsaErrorType;
 import com.idbsa.system.interfaces.rest.dto.GroupLeaderDto;
 import com.idbsa.system.interfaces.rest.dto.GroupLeaderUpdateDto;
-import com.idbsa.system.persistence.jpa.*;
+import com.idbsa.system.persistence.jpa.Group;
+import com.idbsa.system.persistence.jpa.GroupLeader;
+import com.idbsa.system.persistence.jpa.LeaderBadge;
+import com.idbsa.system.persistence.jpa.Rank;
 import com.idbsa.system.service.*;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.exception.SQLGrammarException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class GroupLeaderFacade {
 
     @Autowired
@@ -44,16 +50,25 @@ public class GroupLeaderFacade {
 
     public GroupLeader addGroupLeader(GroupLeaderDto groupLeaderDto){
 
-        Rank leaderRank = rankService.getById(groupLeaderDto.getLeaderRankId());
+        try {
+            Rank leaderRank = rankService.getById(groupLeaderDto.getLeaderRankId());
+            if (leaderRank == null) {
+                log.error("Rank Id is Invald {} ", groupLeaderDto.getLeaderRankId());
+            }
+            LeaderBadge leaderQualification = leaderBadgesService.findById(groupLeaderDto.getLeaderQualificationId());
+            if (leaderQualification == null) {
+                log.error("Leader Qualification Id is Invald {} ", groupLeaderDto.getLeaderQualificationId());
+            }
+            Group leaderGroup = groupService.findById(groupLeaderDto.getGroupId());
 
-        LeaderBadge leaderQualification = leaderBadgesService.findById(groupLeaderDto.getLeaderQualificationId());
+            if (leaderGroup == null) {
+                log.error("Leader Group Id  is Invald {} ", groupLeaderDto.getGroupId());
+            }
 
-        RankBadge leaderScoutQualification = rankBadgesService.findById(groupLeaderDto.getScoutQualificationId());
-
-        Group leaderGroup = groupService.findById(groupLeaderDto.getGroupId());
-
-       return groupLeaderService.create(groupLeaderDto, leaderGroup, leaderRank, leaderScoutQualification, leaderQualification);
-
+            return groupLeaderService.create(groupLeaderDto, leaderGroup, leaderRank, leaderQualification);
+        } catch (SQLGrammarException e){
+            throw new ApplicationException(IdbsaErrorType.SCOUT_QUALIFICATION_NOT_FOUND);
+        }
     }
 
 
@@ -61,15 +76,25 @@ public class GroupLeaderFacade {
 
         Rank leaderRank = rankService.getById(groupLeaderUpdateDto.getLeaderRankId());
 
+        if(leaderRank == null){
+            throw new ApplicationException(IdbsaErrorType.RANK_NOT_FOUND);
+        }
+        GroupLeader groupLeader = groupLeaderService.findById(groupLeaderUpdateDto.getId());
+
         LeaderBadge leaderQualification = leaderBadgesService.findById(groupLeaderUpdateDto.getLeaderQualificationId());
 
-        RankBadge leaderScoutQualification = rankBadgesService.findById(groupLeaderUpdateDto.getScoutQualificationId());
+        if(leaderQualification == null){
+            throw new ApplicationException(IdbsaErrorType.LEADER_QUALIFICATION_NOT_FOUND);
+        }
 
         Group leaderGroup = groupService.findById(groupLeaderUpdateDto.getGroupId());
 
-        GroupLeader groupLeader = groupLeaderService.findById(groupLeaderUpdateDto.getId());
+        if(leaderGroup == null){
+            throw new ApplicationException(IdbsaErrorType.GROUP_LEADER_NOT_FOUND);
+        }
 
-        return groupLeaderService.update(groupLeaderUpdateDto, groupLeader, leaderGroup, leaderRank, leaderScoutQualification, leaderQualification);
+        return groupLeaderService.update(groupLeaderUpdateDto, groupLeader, leaderGroup, leaderRank,
+                leaderQualification);
 
     }
 

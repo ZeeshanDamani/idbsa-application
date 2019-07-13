@@ -3,11 +3,14 @@ package com.idbsa.system.service;
 import com.idbsa.system.exception.ApplicationException;
 import com.idbsa.system.exception.error.IdbsaErrorType;
 import com.idbsa.system.interfaces.rest.dto.GroupDto;
+import com.idbsa.system.interfaces.rest.dto.GroupSummaryDto;
 import com.idbsa.system.interfaces.rest.dto.GroupUpdateDto;
 import com.idbsa.system.persistence.jpa.District;
 import com.idbsa.system.persistence.jpa.Group;
 import com.idbsa.system.persistence.jpa.Jurisdiction;
+import com.idbsa.system.persistence.repository.GroupLeaderRepository;
 import com.idbsa.system.persistence.repository.GroupRepository;
+import com.idbsa.system.persistence.repository.ScoutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +23,28 @@ public class GroupService {
     @Autowired
     GroupRepository groupRepository;
 
+    @Autowired
+    ScoutRepository scoutRepository;
+
+    @Autowired
+    GroupLeaderRepository groupLeaderRepository;
+
     public List<Group> findAll(){
         return groupRepository.findAll();
     }
 
     public Group findById(Integer grougId){
         return groupRepository.findOne(grougId);
+    }
+
+    public GroupSummaryDto getGroupSummary(Integer groupId){
+
+        return GroupSummaryDto.builder()
+                .totalLeaders(groupLeaderRepository.countByGroupId(groupId))
+                .totalShaheen(scoutRepository.countBySectionIdAndGroupId(1,groupId))
+                .totalScouts(scoutRepository.countBySectionIdAndGroupId(2,groupId))
+                .totalRovers(scoutRepository.countBySectionIdAndGroupId(2,groupId))
+                .build();
     }
 
     public List<Group> findByJurisdiction(Integer jurisdictionId){

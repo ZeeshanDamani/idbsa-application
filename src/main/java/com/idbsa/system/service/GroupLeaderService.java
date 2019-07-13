@@ -4,11 +4,15 @@ import com.idbsa.system.exception.ApplicationException;
 import com.idbsa.system.exception.error.IdbsaErrorType;
 import com.idbsa.system.interfaces.rest.dto.GroupLeaderDto;
 import com.idbsa.system.interfaces.rest.dto.GroupLeaderUpdateDto;
-import com.idbsa.system.persistence.jpa.*;
+import com.idbsa.system.persistence.jpa.Group;
+import com.idbsa.system.persistence.jpa.GroupLeader;
+import com.idbsa.system.persistence.jpa.LeaderBadge;
+import com.idbsa.system.persistence.jpa.Rank;
 import com.idbsa.system.persistence.repository.GroupLeaderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.util.List;
 
 @Service
@@ -16,6 +20,9 @@ public class GroupLeaderService {
 
     @Autowired
     GroupLeaderRepository groupLeaderRepository;
+
+    @Autowired
+    private Clock clock;
 
 
     public GroupLeader findById(Integer groupLeaderId){
@@ -42,12 +49,11 @@ public class GroupLeaderService {
         return groupLeaders;
     }
 
-    public GroupLeader create(GroupLeaderDto groupLeaderDto, Group group, Rank rank, RankBadge rankBadge, LeaderBadge leaderBadge){
+    public GroupLeader create(GroupLeaderDto groupLeaderDto, Group group, Rank rank, LeaderBadge leaderBadge){
         GroupLeader groupLeader =  GroupLeader.builder()
                 .group(group)
                 .leaderQualification(leaderBadge)
                 .leaderRank(rank)
-                .scoutQualification(rankBadge)
                 .leaderQualificationCertNumber(groupLeaderDto.getLeaderQualificationCertNumber())
                 .cnic(groupLeaderDto.getCnic())
                 .dateOfBirth(groupLeaderDto.getDateOfBirth())
@@ -57,13 +63,19 @@ public class GroupLeaderService {
                 .mobileNumber(groupLeaderDto.getMobileNumber())
                 .isActive(true)
                 .homeAddress(groupLeaderDto.getHomeAddress())
+                .nicImageUrl(groupLeaderDto.getLeaderNicImageUrl())
+                .leaderImageUrl(groupLeaderDto.getLeaderImageUrl())
+                .leaderQualificationImageUrl(groupLeaderDto.getLeaderQualificationImageUrl())
+                .creationTime(clock.millis())
                 .build();
-       groupLeader = groupLeaderRepository.save(groupLeader);
+        groupLeader.calculateAgeByFormat();
+        groupLeader = groupLeaderRepository.save(groupLeader);
         return groupLeader;
     }
 
 
-    public GroupLeader update(GroupLeaderUpdateDto groupLeaderUpdateDto, GroupLeader groupLeader, Group group, Rank rank, RankBadge rankBadge, LeaderBadge leaderBadge){
+    public GroupLeader update(GroupLeaderUpdateDto groupLeaderUpdateDto, GroupLeader groupLeader, Group group, Rank rank,
+                              LeaderBadge leaderBadge){
 
         groupLeader.setActive(true);
         groupLeader.setCnic(groupLeaderUpdateDto.getCnic());
@@ -73,12 +85,15 @@ public class GroupLeaderService {
         groupLeader.setName(groupLeaderUpdateDto.getName());
         groupLeader.setHomeAddress(groupLeaderUpdateDto.getHomeAddress());
         groupLeader.setLeaderRank(rank);
-        groupLeader.setScoutQualification(rankBadge);
         groupLeader.setLeaderQualification(leaderBadge);
         groupLeader.setLeaderQualificationCertNumber(groupLeaderUpdateDto.getLeaderQualificationCertNumber());
         groupLeader.setMobileNumber(groupLeaderUpdateDto.getMobileNumber());
         groupLeader.setGroup(group);
-
+        groupLeader.setUpdatedTime(clock.millis());
+        groupLeader.calculateAgeByFormat();
+        groupLeader.setNicImageUrl(groupLeaderUpdateDto.getLeaderNicImageUrl());
+        groupLeader.setLeaderQualificationImageUrl(groupLeaderUpdateDto.getLeaderQualificationImageUrl());
+        groupLeader.setLeaderImageUrl(groupLeaderUpdateDto.getLeaderImageUrl());
         groupLeader = groupLeaderRepository.save(groupLeader);
         return groupLeader;
     }

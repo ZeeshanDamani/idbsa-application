@@ -3,6 +3,7 @@ package com.idbsa.system.interfaces.controller;
 
 import com.idbsa.system.interfaces.facade.GroupFacade;
 import com.idbsa.system.interfaces.rest.dto.GroupDto;
+import com.idbsa.system.interfaces.rest.dto.GroupSummaryDto;
 import com.idbsa.system.interfaces.rest.dto.GroupUpdateDto;
 import com.idbsa.system.persistence.jpa.Group;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController()
 @RequestMapping("/api/groups")
+@CrossOrigin
 public class GroupController {
 
     @Autowired
@@ -38,5 +40,10 @@ public class GroupController {
     @GetMapping(value = "/{groupId}")
     public  ResponseEntity<Group> getGroupById(@PathVariable Integer groupId){
         return new ResponseEntity<>(groupFacade.getGroupById(groupId),HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/summary/{groupId}")
+    public  ResponseEntity<GroupSummaryDto> getSummaryByGroupId(@PathVariable Integer groupId){
+        return new ResponseEntity<>(groupFacade.getSummaryByGroupId(groupId),HttpStatus.OK);
     }
 }

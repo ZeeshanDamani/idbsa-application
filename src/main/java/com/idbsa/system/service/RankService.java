@@ -20,8 +20,8 @@ public class RankService {
     public Rank getById(Integer rankId){
         return rankRepository.findOne(rankId);
     }
-
-    public List<Rank> getBySectionId(Integer sectionId){
-        return rankRepository.findBySectionId(sectionId);
-    }
+//
+//    public List<Rank> getBySectionId(Integer sectionId){
+//        return rankRepository.findBySectionId(sectionId);
+//    }
 }

@@ -37,10 +37,6 @@ public class GroupLeader extends BaseEntity {
     @JsonBackReference
     private Group group;
 
-    @JoinColumn(name = "scout_qualification_id")
-    @ManyToOne
-    private RankBadge scoutQualification;
-
     @Column(name = "date_of_joining")
     private String dateOfJoining;
 
@@ -62,7 +58,7 @@ public class GroupLeader extends BaseEntity {
     private LeaderBadge leaderQualification;
 
     @Column(name = "leader_qualification_cert_no")
-    private Integer leaderQualificationCertNumber;
+    private String leaderQualificationCertNumber;
 
     @Column(name = "gr_number")
     private Integer leaderGrNumber;
@@ -70,8 +66,23 @@ public class GroupLeader extends BaseEntity {
     @Column(name = "home_address")
     private String homeAddress;
 
+    @Column(name = "created_at")
+    private Long creationTime;
+
+    @Column(name = "updated_at")
+    private Long updatedTime;
+
     @Column(name = "age")
     private Integer age;
+
+    @Column(name="nic_image_url")
+    private String nicImageUrl;
+
+    @Column(name="leader_image_url")
+    private String leaderImageUrl;
+
+    @Column(name="leader_qualification_image_url")
+    private String leaderQualificationImageUrl;
 
     public static boolean validateCnic(String cnic) {
         if (StringUtils.hasLength(cnic) &&
@@ -108,17 +119,17 @@ public class GroupLeader extends BaseEntity {
     }
 
 
-    public static Integer calculateAgeByFormat(String dateOfBirth) {
+    public  Integer calculateAgeByFormat() {
 
         //format should be dd/mm/yyyy
-        String[] ddmmyyyFormat = dateOfBirth.split("/");
+        String[] ddmmyyyFormat = this.dateOfBirth.split("/");
         LocalDate birthDate = LocalDate.of(Integer.parseInt(ddmmyyyFormat[2]), Integer.parseInt(ddmmyyyFormat[1]),
                 Integer.parseInt(ddmmyyyFormat[0]));
-        int age = calculateAge(birthDate);
+        this.age = calculateAge(birthDate);
         return age;
     }
 
-    public static int calculateAge(LocalDate birthDate) {
+    public  int calculateAge(LocalDate birthDate) {
         if ((birthDate != null)) {
             return Period.between(birthDate, LocalDate.now()).getYears();
         } else {

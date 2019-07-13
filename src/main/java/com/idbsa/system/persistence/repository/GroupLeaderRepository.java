@@ -11,4 +11,6 @@ import java.util.List;
 public interface GroupLeaderRepository extends JpaRepository<GroupLeader, Integer> {
 
     List<GroupLeader> findByGroupId(Integer groupId);
+
+    Integer countByGroupId(Integer groupId);
 }

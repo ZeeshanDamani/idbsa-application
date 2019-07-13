@@ -3,29 +3,24 @@ package com.idbsa.system.persistence.jpa;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.idbsa.system.persistence.jpa.BaseEntity.NamedEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @Entity(name = "rank_badges")
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-@Slf4j
 public class RankBadge extends NamedEntity {
 
     @Column(name = "code")
     private String code;
 
-    @Column(name = "prerequisite")
+    @JoinColumn(name = "prerequisite",nullable = true)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonBackReference
     private RankBadge preRequisite;
 
     @Column(name = "is_active")
@@ -35,5 +30,4 @@ public class RankBadge extends NamedEntity {
     @ManyToOne
     @JsonBackReference
     private Section section;
-
 }

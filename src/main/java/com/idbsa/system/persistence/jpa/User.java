@@ -12,22 +12,24 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Data
-@Entity(name = "leader_badges")
+@Entity(name = "section")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Slf4j
-public class LeaderBadge extends NamedEntity {
+public class User extends NamedEntity {
 
-    @Column(name = "code")
-    private String code;
+    @Column(name ="email")
+    private String email;
 
-//    @JoinColumn(name = "prerequisite")
-//    @ManyToOne
-//    @JsonBackReference
-//    @Null
-//    private LeaderBadge preRequisite;
+    @Column(name ="password")
+    private String password;
 
-    @Column(name = "is_active")
-    private boolean isActive;
+    @Column(name ="group_id")
+    private int group;
+
+    @Column(name ="role_od")
+    private int role;
+
+
 }
