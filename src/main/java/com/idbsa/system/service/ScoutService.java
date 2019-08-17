@@ -3,10 +3,7 @@ package com.idbsa.system.service;
 import com.idbsa.system.interfaces.rest.dto.ScoutDto;
 import com.idbsa.system.interfaces.rest.dto.ScoutPromotionDto;
 import com.idbsa.system.interfaces.rest.dto.ScoutUpdateDto;
-import com.idbsa.system.persistence.jpa.Group;
-import com.idbsa.system.persistence.jpa.RankBadge;
-import com.idbsa.system.persistence.jpa.Scout;
-import com.idbsa.system.persistence.jpa.Section;
+import com.idbsa.system.persistence.jpa.*;
 import com.idbsa.system.persistence.repository.ScoutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,12 +35,12 @@ public class ScoutService {
         return scoutRepository.findByGroupIdAndSectionId(groupId, sectionId);
     }
 
-    public Scout create(ScoutDto scoutDto, Group group, Section section, RankBadge rankBadge){
+    public Scout create(ScoutDto scoutDto, Group group, Section section, RankBadge rankBadge, Rank rank){
 
         Scout scout = new Scout();
         scout.setFatherName(scoutDto.getFatherName());
-        scout.setFullName(scoutDto.getName());
-        scout.setAddress(scoutDto.getHomeAddress());
+        scout.setName(scoutDto.getName());
+        scout.setHomeAddress(scoutDto.getHomeAddress());
         scout.setCnic(scoutDto.getCnic());
         scout.setDateOfBirth(scoutDto.getDateOfBirth());
         scout.setDateOfJoining(scoutDto.getDateOfJoining());
@@ -55,19 +52,21 @@ public class ScoutService {
         scout.setCreationTime(clock.millis());
         scout.setScoutQualification(rankBadge);
         scout.setSection(section);
-        scout.setScoutImageUrl(scoutDto.getScoutImageUrl());
+        scout.setImageUrl(scoutDto.getScoutImageUrl());
         scout.setNicImageUrl(scoutDto.getScoutNicImageUrl());
         scout.setBloodGroup(scoutDto.getBloodGroup());
+        scout.setEmailAddress(scoutDto.getEmailAddress());
+        scout.setRank(rank);
 
         return scoutRepository.save(scout);
 
     }
 
-    public Scout update(ScoutUpdateDto scoutUpdateDto, Scout fetchedScout, Group group, Section section, RankBadge rankBadge){
+    public Scout update(ScoutUpdateDto scoutUpdateDto, Scout fetchedScout, Group group, Section section, RankBadge rankBadge, Rank rank){
 
         fetchedScout.setFatherName(scoutUpdateDto.getFatherName());
-        fetchedScout.setFullName(scoutUpdateDto.getName());
-        fetchedScout.setAddress(scoutUpdateDto.getHomeAddress());
+        fetchedScout.setName(scoutUpdateDto.getName());
+        fetchedScout.setHomeAddress(scoutUpdateDto.getHomeAddress());
         fetchedScout.setCnic(scoutUpdateDto.getCnic());
         fetchedScout.setDateOfBirth(scoutUpdateDto.getDateOfBirth());
         fetchedScout.setDateOfJoining(scoutUpdateDto.getDateOfJoining());
@@ -79,9 +78,11 @@ public class ScoutService {
         fetchedScout.setScoutQualification(rankBadge);
         fetchedScout.setSection(section);
         fetchedScout.setUpdatedTime(clock.millis());
-        fetchedScout.setScoutImageUrl(scoutUpdateDto.getScoutImageUrl());
+        fetchedScout.setImageUrl(scoutUpdateDto.getScoutImageUrl());
         fetchedScout.setNicImageUrl(scoutUpdateDto.getScoutNicImageUrl());
         fetchedScout.setBloodGroup(scoutUpdateDto.getBloodGroup());
+        fetchedScout.setRank(rank);
+        fetchedScout.setEmailAddress(scoutUpdateDto.getEmailAddress());
 
         return scoutRepository.save(fetchedScout);
     }

@@ -3,7 +3,6 @@ package com.idbsa.system.service;
 import com.idbsa.system.exception.ApplicationException;
 import com.idbsa.system.exception.error.IdbsaErrorType;
 import com.idbsa.system.interfaces.rest.dto.GroupLeaderDto;
-import com.idbsa.system.interfaces.rest.dto.GroupLeaderUpdateDto;
 import com.idbsa.system.persistence.jpa.Group;
 import com.idbsa.system.persistence.jpa.GroupLeader;
 import com.idbsa.system.persistence.jpa.LeaderBadge;
@@ -43,7 +42,7 @@ public class GroupLeaderService {
 
     public List<GroupLeader> findByGroupId(Integer groupId){
         List<GroupLeader> groupLeaders = groupLeaderRepository.findByGroupId(groupId);
-        if(groupLeaders == null || groupLeaders.size() > 0){
+        if(groupLeaders == null || groupLeaders.size() < 0){
             throw new ApplicationException(IdbsaErrorType.GROUP_LEADER_NOT_FOUND);
         }
         return groupLeaders;
@@ -53,7 +52,7 @@ public class GroupLeaderService {
         GroupLeader groupLeader =  GroupLeader.builder()
                 .group(group)
                 .leaderQualification(leaderBadge)
-                .leaderRank(rank)
+                .rank(rank)
                 .leaderQualificationCertNumber(groupLeaderDto.getLeaderQualificationCertNumber())
                 .cnic(groupLeaderDto.getCnic())
                 .dateOfBirth(groupLeaderDto.getDateOfBirth())
@@ -64,9 +63,13 @@ public class GroupLeaderService {
                 .isActive(true)
                 .homeAddress(groupLeaderDto.getHomeAddress())
                 .nicImageUrl(groupLeaderDto.getLeaderNicImageUrl())
-                .leaderImageUrl(groupLeaderDto.getLeaderImageUrl())
+                .imageUrl(groupLeaderDto.getLeaderImageUrl())
                 .leaderQualificationImageUrl(groupLeaderDto.getLeaderQualificationImageUrl())
+                .bloodGroup(groupLeaderDto.getBloodGroup())
                 .creationTime(clock.millis())
+                .updatedTime(clock.millis())
+                .leaderAcademicQualification(groupLeaderDto.getEducationalQualification())
+                .emailAddress(groupLeaderDto.getEmailAddress())
                 .build();
         groupLeader.calculateAgeByFormat();
         groupLeader = groupLeaderRepository.save(groupLeader);
@@ -74,7 +77,7 @@ public class GroupLeaderService {
     }
 
 
-    public GroupLeader update(GroupLeaderUpdateDto groupLeaderUpdateDto, GroupLeader groupLeader, Group group, Rank rank,
+    public GroupLeader update(GroupLeaderDto groupLeaderUpdateDto, GroupLeader groupLeader, Group group, Rank rank,
                               LeaderBadge leaderBadge){
 
         groupLeader.setActive(true);
@@ -84,7 +87,7 @@ public class GroupLeaderService {
         groupLeader.setFatherName(groupLeaderUpdateDto.getFatherName());
         groupLeader.setName(groupLeaderUpdateDto.getName());
         groupLeader.setHomeAddress(groupLeaderUpdateDto.getHomeAddress());
-        groupLeader.setLeaderRank(rank);
+        groupLeader.setRank(rank);
         groupLeader.setLeaderQualification(leaderBadge);
         groupLeader.setLeaderQualificationCertNumber(groupLeaderUpdateDto.getLeaderQualificationCertNumber());
         groupLeader.setMobileNumber(groupLeaderUpdateDto.getMobileNumber());
@@ -93,7 +96,10 @@ public class GroupLeaderService {
         groupLeader.calculateAgeByFormat();
         groupLeader.setNicImageUrl(groupLeaderUpdateDto.getLeaderNicImageUrl());
         groupLeader.setLeaderQualificationImageUrl(groupLeaderUpdateDto.getLeaderQualificationImageUrl());
-        groupLeader.setLeaderImageUrl(groupLeaderUpdateDto.getLeaderImageUrl());
+        groupLeader.setImageUrl(groupLeaderUpdateDto.getLeaderImageUrl());
+        groupLeader.setBloodGroup(groupLeaderUpdateDto.getBloodGroup());
+        groupLeader.setEmailAddress(groupLeaderUpdateDto.getEmailAddress());
+        groupLeader.setLeaderAcademicQualification(groupLeaderUpdateDto.getEducationalQualification());
         groupLeader = groupLeaderRepository.save(groupLeader);
         return groupLeader;
     }

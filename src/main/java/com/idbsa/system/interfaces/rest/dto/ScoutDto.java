@@ -19,12 +19,13 @@ public class ScoutDto {
     private String dateOfBirth;
     private String cnic;
     private boolean isActive;
-    private Integer scoutQualification;
+    private Integer scoutQualificationId;
     private String homeAddress;
     private String transferDate;
     private Integer sectionId;
     private String scoutImageUrl;
     private String scoutNicImageUrl;
+    private Integer scoutRankId;
+    private String emailAddress;
     private String bloodGroup;
-    private boolean isOverAge;
 }

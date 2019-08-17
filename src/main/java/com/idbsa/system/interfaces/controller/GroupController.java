@@ -43,7 +43,7 @@ public class GroupController {
     }
 
     @PostMapping(value = "/summary/{groupId}")
-    public  ResponseEntity<GroupSummaryDto> getSummaryByGroupId(@PathVariable Integer groupId){
+    public  ResponseEntity<List<GroupSummaryDto> > getSummaryByGroupId(@PathVariable Integer groupId){
         return new ResponseEntity<>(groupFacade.getSummaryByGroupId(groupId),HttpStatus.OK);
     }
 }

@@ -8,9 +8,11 @@ public enum IdbsaErrorType {
     JURISDICTION_NOT_FOUND(2, "Invalid Jurisdiction Id"),
     GROUP_LEADER_NOT_FOUND(3, "Invalid Group Leader Id"),
     RANK_NOT_FOUND(4, "Invalid Rank Id"),
-    LEADER_QUALIFICATION_NOT_FOUND(4, "Invalid Leader Qualification Id"),
-    SCOUT_QUALIFICATION_NOT_FOUND(4, "Invalid Scout Qualification Id"),
-    ENTITY_NOT_FOUND(4, "Invalid Id");
+    LEADER_QUALIFICATION_NOT_FOUND(5, "Invalid Leader Qualification Id"),
+    SCOUT_QUALIFICATION_NOT_FOUND(6, "Invalid Scout Qualification Id"),
+    ENTITY_NOT_FOUND(7, "Invalid Id"),
+    NOT_AUTHORIZE(8, "Authorization Error"),
+    INVALID_CREDENTIALS(8, "Invalid Credentials");
 
 
     private int code;

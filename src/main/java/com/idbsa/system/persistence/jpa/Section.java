@@ -31,7 +31,7 @@ public class Section extends NamedEntity {
     @Column(name ="scouts_per_unit")
     private int scoutsPerunit;
 
-    @Column(name ="leader_per_unit")
+    @Column(name ="leaders_per_unit")
     private int leadersPerUnit;
 
     @Column(name ="patrol_size")

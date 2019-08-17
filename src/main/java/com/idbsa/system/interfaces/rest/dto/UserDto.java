@@ -9,4 +9,5 @@ public class UserDto {
     String userEmail;
     String userPassword;
     int groupId;
+    String accessLevel;
 }

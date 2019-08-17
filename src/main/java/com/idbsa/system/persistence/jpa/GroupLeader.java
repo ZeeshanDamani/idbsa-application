@@ -1,7 +1,6 @@
 package com.idbsa.system.persistence.jpa;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.idbsa.system.persistence.jpa.BaseEntity.BaseEntity;
 import lombok.*;
 import org.springframework.util.StringUtils;
@@ -10,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -34,21 +34,20 @@ public class GroupLeader extends BaseEntity {
 
     @JoinColumn(name = "group_id")
     @ManyToOne
-    @JsonBackReference
     private Group group;
 
     @Column(name = "date_of_joining")
-    private String dateOfJoining;
+    private Long dateOfJoining;
 
     @Column(name = "date_of_birth")
-    private String dateOfBirth;
+    private Long dateOfBirth;
 
     @Column(name = "cnic")
     private String cnic;
 
     @JoinColumn(name = "rank_id")
     @ManyToOne
-    private Rank leaderRank;
+    private Rank rank;
 
     @Column(name = "is_active")
     private boolean isActive;
@@ -61,7 +60,7 @@ public class GroupLeader extends BaseEntity {
     private String leaderQualificationCertNumber;
 
     @Column(name = "gr_number")
-    private Integer leaderGrNumber;
+    private String grNumber;
 
     @Column(name = "home_address")
     private String homeAddress;
@@ -79,10 +78,19 @@ public class GroupLeader extends BaseEntity {
     private String nicImageUrl;
 
     @Column(name="leader_image_url")
-    private String leaderImageUrl;
+    private String imageUrl;
 
     @Column(name="leader_qualification_image_url")
     private String leaderQualificationImageUrl;
+
+    @Column(name="leader_academic_qualification")
+    private String leaderAcademicQualification;
+
+    @Column(name="email_address")
+    private String emailAddress;
+
+    @Column(name="blood_group")
+    private String bloodGroup;
 
     public static boolean validateCnic(String cnic) {
         if (StringUtils.hasLength(cnic) &&
@@ -122,9 +130,8 @@ public class GroupLeader extends BaseEntity {
     public  Integer calculateAgeByFormat() {
 
         //format should be dd/mm/yyyy
-        String[] ddmmyyyFormat = this.dateOfBirth.split("/");
-        LocalDate birthDate = LocalDate.of(Integer.parseInt(ddmmyyyFormat[2]), Integer.parseInt(ddmmyyyFormat[1]),
-                Integer.parseInt(ddmmyyyFormat[0]));
+        Date dob = new Date(this.dateOfBirth);
+        LocalDate birthDate = dob.toLocalDate();
         this.age = calculateAge(birthDate);
         return age;
     }

@@ -14,8 +14,8 @@ public class GroupLeaderDto {
     private String fatherName;
     private String mobileNumber;
     private Integer groupId;
-    private String dateOfJoining;
-    private String dateOfBirth;
+    private Long dateOfJoining;
+    private Long dateOfBirth;
     private String cnic;
     private Integer leaderRankId;
     private boolean isActive;
@@ -25,4 +25,7 @@ public class GroupLeaderDto {
     private String leaderImageUrl;
     private String leaderNicImageUrl;
     private String leaderQualificationImageUrl;
+    private String bloodGroup;
+    private String emailAddress;
+    private String educationalQualification;
 }

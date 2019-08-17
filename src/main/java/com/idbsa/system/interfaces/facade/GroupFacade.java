@@ -36,7 +36,7 @@ public class GroupFacade {
         return groupService.findById(groupId);
     }
 
-    public GroupSummaryDto getSummaryByGroupId(Integer groupId){
+    public List<GroupSummaryDto>  getSummaryByGroupId(Integer groupId){
         return groupService.getGroupSummary(groupId);
     }
 

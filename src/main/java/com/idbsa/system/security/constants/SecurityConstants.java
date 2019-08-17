@@ -1,4 +1,4 @@
-package com.idbsa.system.security.Constants;
+package com.idbsa.system.security.constants;
 
 public final class SecurityConstants {
 

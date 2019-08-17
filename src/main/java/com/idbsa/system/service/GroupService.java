@@ -8,12 +8,15 @@ import com.idbsa.system.interfaces.rest.dto.GroupUpdateDto;
 import com.idbsa.system.persistence.jpa.District;
 import com.idbsa.system.persistence.jpa.Group;
 import com.idbsa.system.persistence.jpa.Jurisdiction;
+import com.idbsa.system.persistence.jpa.Section;
 import com.idbsa.system.persistence.repository.GroupLeaderRepository;
 import com.idbsa.system.persistence.repository.GroupRepository;
 import com.idbsa.system.persistence.repository.ScoutRepository;
+import com.idbsa.system.persistence.repository.SectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -29,6 +32,9 @@ public class GroupService {
     @Autowired
     GroupLeaderRepository groupLeaderRepository;
 
+    @Autowired
+    SectionRepository sectionRepository;
+
     public List<Group> findAll(){
         return groupRepository.findAll();
     }
@@ -37,14 +43,20 @@ public class GroupService {
         return groupRepository.findOne(grougId);
     }
 
-    public GroupSummaryDto getGroupSummary(Integer groupId){
+    public List<GroupSummaryDto> getGroupSummary(Integer groupId) {
 
-        return GroupSummaryDto.builder()
-                .totalLeaders(groupLeaderRepository.countByGroupId(groupId))
-                .totalShaheen(scoutRepository.countBySectionIdAndGroupId(1,groupId))
-                .totalScouts(scoutRepository.countBySectionIdAndGroupId(2,groupId))
-                .totalRovers(scoutRepository.countBySectionIdAndGroupId(2,groupId))
-                .build();
+        List<GroupSummaryDto> groupSummaryDtoList = new ArrayList<>();
+        List<Section> sections = sectionRepository.findAll();
+
+        for (int i = 0; i < sections.size(); i++) {
+            groupSummaryDtoList.add(GroupSummaryDto.builder().sectionName(sections.get(i).getName()).
+                    totalCount(scoutRepository.countBySectionIdAndGroupId(sections.get(i).getId(),
+                            groupId)).build());
+        }
+        groupSummaryDtoList.add(GroupSummaryDto.builder().sectionName("Leaders").
+                totalCount(groupLeaderRepository.countByGroupId(groupId))
+                .build());
+        return groupSummaryDtoList;
     }
 
     public List<Group> findByJurisdiction(Integer jurisdictionId){

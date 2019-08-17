@@ -10,9 +10,10 @@ import lombok.Data;
 @JsonIgnoreProperties
 @Data
 @Builder
-public class GroupSummaryDto {
+public class RankDto {
 
-    String sectionName;
-    Integer totalCount;
-
+    private int id;
+    private String name;
+    private int sectionId;
+    private boolean isLeaderRank;
 }

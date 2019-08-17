@@ -4,7 +4,6 @@ package com.idbsa.system.interfaces.facade;
 import com.idbsa.system.exception.ApplicationException;
 import com.idbsa.system.exception.error.IdbsaErrorType;
 import com.idbsa.system.interfaces.rest.dto.GroupLeaderDto;
-import com.idbsa.system.interfaces.rest.dto.GroupLeaderUpdateDto;
 import com.idbsa.system.persistence.jpa.Group;
 import com.idbsa.system.persistence.jpa.GroupLeader;
 import com.idbsa.system.persistence.jpa.LeaderBadge;
@@ -72,14 +71,14 @@ public class GroupLeaderFacade {
     }
 
 
-    public GroupLeader update(GroupLeaderUpdateDto groupLeaderUpdateDto){
+    public GroupLeader update(GroupLeaderDto groupLeaderUpdateDto, Integer leaderId){
 
         Rank leaderRank = rankService.getById(groupLeaderUpdateDto.getLeaderRankId());
 
         if(leaderRank == null){
             throw new ApplicationException(IdbsaErrorType.RANK_NOT_FOUND);
         }
-        GroupLeader groupLeader = groupLeaderService.findById(groupLeaderUpdateDto.getId());
+        GroupLeader groupLeader = groupLeaderService.findById(leaderId);
 
         LeaderBadge leaderQualification = leaderBadgesService.findById(groupLeaderUpdateDto.getLeaderQualificationId());
 

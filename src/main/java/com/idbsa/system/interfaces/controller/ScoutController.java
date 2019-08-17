@@ -1,7 +1,9 @@
 package com.idbsa.system.interfaces.controller;
 
 
+import com.idbsa.system.exception.ApiResponse;
 import com.idbsa.system.interfaces.facade.ScoutFacade;
+import com.idbsa.system.interfaces.rest.ResponseMessages;
 import com.idbsa.system.interfaces.rest.dto.ScoutDto;
 import com.idbsa.system.interfaces.rest.dto.ScoutPromotionDto;
 import com.idbsa.system.interfaces.rest.dto.ScoutUpdateDto;
@@ -15,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/scout")
+@CrossOrigin
 public class ScoutController {
 
     @Autowired
@@ -25,19 +28,34 @@ public class ScoutController {
         return new ResponseEntity<>(scoutFacade.findById(scoutId), HttpStatus.OK);
     }
 
-    @GetMapping("/section/sectionId/group/{groupId}")
+    @PostMapping("/section/{sectionId}/group/{groupId}")
     public ResponseEntity<List<Scout>> getScoutById(@PathVariable Integer sectionId, @PathVariable Integer groupId){
         return new ResponseEntity<>(scoutFacade.findByGroupIdAdndSectionId(groupId,sectionId), HttpStatus.OK);
+
     }
 
     @PostMapping
-    public ResponseEntity<Scout> createScout(@RequestBody ScoutDto scoutDto){
-        return new ResponseEntity<>(scoutFacade.createScout(scoutDto), HttpStatus.OK);
+    public ResponseEntity<ApiResponse> createScout(@RequestBody ScoutDto scoutDto){
+        scoutFacade.createScout(scoutDto);
+        return new  ResponseEntity<>(ApiResponse.builder()
+                .timestamp(System.currentTimeMillis())
+                .message(ResponseMessages.SCOUT_CREATION.getMessage())
+                .responseCode(HttpStatus.CREATED.value())
+                .success(true)
+                .build(),
+                HttpStatus.CREATED);
     }
 
-    @PutMapping
-    public ResponseEntity<Scout> createScout(@RequestBody ScoutUpdateDto scoutUpdateDto){
-        return new ResponseEntity<>(scoutFacade.updateScout(scoutUpdateDto), HttpStatus.OK);
+    @PostMapping(value = "/{scoutId}")
+    public ResponseEntity<ApiResponse> updateeScout(@RequestBody ScoutUpdateDto scoutUpdateDto, @PathVariable Integer scoutId){
+        scoutFacade.updateScout(scoutUpdateDto,scoutId);
+        return new  ResponseEntity<>(ApiResponse.builder()
+                .timestamp(System.currentTimeMillis())
+                .message(ResponseMessages.SCOUT_CREATION.getMessage())
+                .responseCode(HttpStatus.CREATED.value())
+                .success(true)
+                .build(),
+                HttpStatus.OK);
     }
 
     @GetMapping("/{groupId}/{scoutId}")

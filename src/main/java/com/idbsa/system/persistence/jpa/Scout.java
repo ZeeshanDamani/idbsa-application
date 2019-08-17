@@ -3,10 +3,7 @@ package com.idbsa.system.persistence.jpa;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.idbsa.system.persistence.jpa.BaseEntity.BaseEntity;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.Column;
@@ -20,18 +17,23 @@ import java.time.Period;
 @ToString
 @EqualsAndHashCode
 @Setter
+@Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Scout extends BaseEntity {
 
-    //TODO :Add GR NUMBER
     @Column(name="full_name")
-    private String fullName;
+    private String name;
+
+    @Column(name = "gr_number")
+    private String grNumber;
 
     @Column(name = "father_name")
     private String fatherName;
 
     @Column(name = "home_address")
-    private String address;
+    private String homeAddress;
 
     @Column(name = "home_contact")
     private String homeContact;
@@ -41,12 +43,10 @@ public class Scout extends BaseEntity {
 
     @JoinColumn(name = "section_id")
     @ManyToOne
-    @JsonBackReference
     private Section section;
 
     @JoinColumn(name = "group_id")
     @ManyToOne
-    @JsonBackReference
     private Group group;
 
     @JoinColumn(name = "last_scout_qualification_id")
@@ -85,7 +85,14 @@ public class Scout extends BaseEntity {
     private String nicImageUrl;
 
     @Column(name="socut_image_url")
-    private String scoutImageUrl;
+    private String imageUrl;
+
+    @JoinColumn(name = "rank_id")
+    @ManyToOne
+    private Rank rank;
+
+    @Column(name = "email_address")
+    private String emailAddress;
 
     public static boolean validateCnic(String cnic) {
         if (StringUtils.hasLength(cnic) &&

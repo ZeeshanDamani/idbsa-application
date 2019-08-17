@@ -3,10 +3,7 @@ package com.idbsa.system.interfaces.facade;
 import com.idbsa.system.interfaces.rest.dto.ScoutDto;
 import com.idbsa.system.interfaces.rest.dto.ScoutPromotionDto;
 import com.idbsa.system.interfaces.rest.dto.ScoutUpdateDto;
-import com.idbsa.system.persistence.jpa.Group;
-import com.idbsa.system.persistence.jpa.RankBadge;
-import com.idbsa.system.persistence.jpa.Scout;
-import com.idbsa.system.persistence.jpa.Section;
+import com.idbsa.system.persistence.jpa.*;
 import com.idbsa.system.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +24,7 @@ public class ScoutFacade {
 
     @Autowired
     RankBadgesService rankBadgesService;
+
 
     @Autowired
     GroupService groupService;
@@ -50,18 +48,20 @@ public class ScoutFacade {
     public Scout createScout(ScoutDto scoutDto){
         Section section = sectionService.findById(scoutDto.getSectionId());
         Group group = groupService.findById(scoutDto.getGroupId());
-        RankBadge rankBadge = rankBadgesService.findById(scoutDto.getScoutQualification());
+        RankBadge rankBadge = rankBadgesService.findById(scoutDto.getScoutQualificationId());
+        Rank rank  = rankService.getById(scoutDto.getScoutRankId());
 
-        return scoutService.create(scoutDto, group, section,rankBadge);
+        return scoutService.create(scoutDto, group, section,rankBadge,rank);
     }
 
-    public Scout updateScout(ScoutUpdateDto scoutUpdateDto){
+    public Scout updateScout(ScoutUpdateDto scoutUpdateDto, Integer scoutId){
         Section section = sectionService.findById(scoutUpdateDto.getSectionId());
         Group group = groupService.findById(scoutUpdateDto.getGroupId());
-        RankBadge rankBadge = rankBadgesService.findById(scoutUpdateDto.getScoutQualification());
-        Scout scout = scoutService.findById(scoutUpdateDto.getId());
+        RankBadge rankBadge = rankBadgesService.findById(scoutUpdateDto.getScoutQualificationId());
+        Scout scout = scoutService.findById(scoutId);
+        Rank rank  = rankService.getById(scoutUpdateDto.getScoutRankId());
 
-        return scoutService.update(scoutUpdateDto, scout, group, section,rankBadge);
+        return scoutService.update(scoutUpdateDto, scout, group, section,rankBadge, rank);
     }
 
 

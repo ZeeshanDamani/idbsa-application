@@ -1,8 +1,9 @@
 package com.idbsa.system.interfaces.controller;
 
+import com.idbsa.system.exception.ApiResponse;
 import com.idbsa.system.interfaces.facade.GroupLeaderFacade;
+import com.idbsa.system.interfaces.rest.ResponseMessages;
 import com.idbsa.system.interfaces.rest.dto.GroupLeaderDto;
-import com.idbsa.system.interfaces.rest.dto.GroupLeaderUpdateDto;
 import com.idbsa.system.persistence.jpa.GroupLeader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/leaders")
+@CrossOrigin
 public class GroupLeaderController {
 
     @Autowired
@@ -24,17 +26,32 @@ public class GroupLeaderController {
 //    }
 
     @PostMapping
-    public ResponseEntity<GroupLeader> addGroupLeader(@RequestBody GroupLeaderDto groupLeaderDto){
-        return new ResponseEntity<>(groupLeaderFacade.addGroupLeader(groupLeaderDto), HttpStatus.CREATED);
+    public ResponseEntity<ApiResponse> addGroupLeader(@RequestBody GroupLeaderDto groupLeaderDto){
+        groupLeaderFacade.addGroupLeader(groupLeaderDto);
+      return new  ResponseEntity<>(ApiResponse.builder()
+                .timestamp(System.currentTimeMillis())
+                .message(ResponseMessages.LEADER_CREATION.getMessage())
+                .responseCode(HttpStatus.CREATED.value())
+                .success(true)
+                .build(),
+                HttpStatus.CREATED);
     }
 
-    @PutMapping
-    public ResponseEntity<GroupLeader> updateGroupLeader(@RequestBody GroupLeaderUpdateDto groupLeaderUpdateDto){
-        return new ResponseEntity<>(groupLeaderFacade.update(groupLeaderUpdateDto), HttpStatus.CREATED);
+    @PostMapping(value = "/{leaderId}")
+    public ResponseEntity<ApiResponse> updateGroupLeader(@RequestBody GroupLeaderDto groupLeaderUpdateDto,
+                                                         @PathVariable Integer leaderId){
+        groupLeaderFacade.update(groupLeaderUpdateDto, leaderId);
+        return new  ResponseEntity<>(ApiResponse.builder()
+                .timestamp(System.currentTimeMillis())
+                .message(ResponseMessages.LEADER_UPDATE.getMessage())
+                .responseCode(HttpStatus.OK.value())
+                .success(true)
+                .build(),
+                HttpStatus.CREATED);
     }
 
-    @GetMapping(name = "/group/{groupId}")
-    public ResponseEntity<List<GroupLeader>> findbyGroupId(@PathVariable Integer groupId){
+    @PostMapping    (value = "/group/{groupId}")
+    public ResponseEntity<List<GroupLeader>> findByGroupId(@PathVariable Integer groupId){
         return new ResponseEntity<>(groupLeaderFacade.findByGroupId(groupId), HttpStatus.OK);
     }
 }
