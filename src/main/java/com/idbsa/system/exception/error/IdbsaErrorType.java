@@ -12,9 +12,13 @@ public enum IdbsaErrorType {
     SCOUT_QUALIFICATION_NOT_FOUND(6, "Invalid Scout Qualification Id"),
     ENTITY_NOT_FOUND(7, "Invalid Id"),
     NOT_AUTHORIZE(8, "Authorization Error"),
-    INVALID_CREDENTIALS(9, "Invalid Credentials"),
     UNABLE_TO_TRANSFER(10, "Unable to transfer due to age"),
-    UNABLE_TO_ACTIVATE(11, "Unable to set Active");
+    UNABLE_TO_ACTIVATE(11, "Unable to set Active"),
+    INVALID_USER(12, "Invalid User for Request"),
+    INVALID_CREDENTIALS(9, "Invalid Credentials"),
+    SCOUT_NOT_FOUND(13, "Scout not Find "),
+    SCOUT_CNIC_ALREADY_EXIST(14, "Scout is already registered with CNIC"),
+    LEADER_CNIC_ALREADY_EXIST(15, "Leader is already registered with CNIC");
 
 
 

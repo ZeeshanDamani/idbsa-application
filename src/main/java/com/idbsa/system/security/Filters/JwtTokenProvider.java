@@ -41,6 +41,7 @@ public class JwtTokenProvider {
         claims.put("roles", user.getAuthorities());
         claims.put("userId" , user.getId());
         claims.put("user" , user.getUsername());
+        claims.put("groupId" , user.getGroup().getId());
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
@@ -69,15 +70,10 @@ public class JwtTokenProvider {
         return null;
     }
 
-    public boolean validateToken(String token) {
+    public Claims validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-
-            if (claims.getBody().getExpiration().before(new Date())) {
-                return false;
-            }
-
-            return true;
+            return claims.getBody();
         } catch (JwtException | IllegalArgumentException e) {
             throw new JwtException("Expired or invalid JWT token");
         }

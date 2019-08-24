@@ -46,6 +46,6 @@ public class Section extends NamedEntity {
     private RankBadge basicRankBadge;
 
     @Column(name ="code")
-    private int code;
+    private String code;
 
 }

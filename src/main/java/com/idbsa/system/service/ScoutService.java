@@ -1,9 +1,12 @@
 package com.idbsa.system.service;
 
+import com.idbsa.system.exception.ApplicationException;
+import com.idbsa.system.exception.error.IdbsaErrorType;
 import com.idbsa.system.interfaces.rest.dto.ScoutDto;
 import com.idbsa.system.interfaces.rest.dto.ScoutUpdateDto;
 import com.idbsa.system.persistence.jpa.*;
 import com.idbsa.system.persistence.repository.ScoutRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +14,7 @@ import java.time.Clock;
 import java.util.List;
 
 @Service
+@Slf4j
 public class ScoutService {
 
     @Autowired
@@ -24,6 +28,12 @@ public class ScoutService {
     }
     public Scout findById(Integer scoutId){
         Scout scout =  scoutRepository.findOne(scoutId);
+        if(scout == null){
+            throw ApplicationException.builder()
+                    .appMessage(IdbsaErrorType.SCOUT_NOT_FOUND.getAppMessage())
+                    .appCode(IdbsaErrorType.SCOUT_NOT_FOUND.getAppCode())
+                    .build();
+        }
         scout.calculateAgeByFormat();
         scout.calcualteYearsofService();
         scout.checkIsOverAge();
@@ -129,6 +139,11 @@ public class ScoutService {
             overAgeCount = scout.checkIsOverAge() == true ? overAgeCount++ : overAgeCount;
         }
         return overAgeCount;
+    }
+
+
+    public   List<Scout> findByCnic(String cnic){
+        return scoutRepository.findByCnic(cnic);
     }
 
 }

@@ -12,5 +12,7 @@ public interface GroupLeaderRepository extends JpaRepository<GroupLeader, Intege
 
     List<GroupLeader> findByGroupId(Integer groupId);
 
+    List<GroupLeader> findByCnic(String cnic);
+
     Integer countByGroupId(Integer groupId);
 }

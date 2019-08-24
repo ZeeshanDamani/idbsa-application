@@ -106,7 +106,9 @@ public class GroupLeaderService {
         return groupLeaderRepository.save(groupLeader);
     }
 
-
+    public List<GroupLeader> findByCnic(String cnic){
+        return groupLeaderRepository.findByCnic(cnic);
+    }
 
     //:TODO Find by JurisdictionId
     public List<GroupLeader> findByJurisdictionId(){

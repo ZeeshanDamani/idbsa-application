@@ -15,15 +15,23 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ApplicationException.class)
     public final ResponseEntity<ApiResponse> handleNotFoundException(ApplicationException ex, WebRequest request) {
 
-        if(Integer.parseInt(ex.getAppCode()) == 8) {
-
+       if(ex.getAppCode().equals("APP-009") || ex.getAppCode().equals("APP-0012")) {
             return new ResponseEntity<ApiResponse>(ApiResponse.builder()
                     .timestamp(System.currentTimeMillis())
                     .responseCode(HttpStatus.UNAUTHORIZED.value())
                     .success(false)
                     .message(ex.getAppMessage())
-                    .build()
-                    , HttpStatus.UNAUTHORIZED);
+                    .build(),HttpStatus.UNAUTHORIZED);
+        } if(ex.getAppCode().equals("APP-0013") || ex.getAppCode().equals("APP-0014") || ex.getAppCode().equals("APP-001")
+        || ex.getAppCode().equals("APP-002") || ex.getAppCode().equals("APP-003") || ex.getAppCode().equals("APP-004")
+                || ex.getAppCode().equals("APP-005") || ex.getAppCode().equals("APP-006")){
+            return new ResponseEntity<ApiResponse>(ApiResponse.builder()
+                    .timestamp(System.currentTimeMillis())
+                    .responseCode(HttpStatus.FORBIDDEN.value())
+                    .success(false)
+                    .message(ex.getAppMessage())
+                    .build(),HttpStatus.FORBIDDEN);
+
         } else {
             return new ResponseEntity<ApiResponse>(ApiResponse.builder()
                     .timestamp(System.currentTimeMillis())
@@ -33,8 +41,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                     .build(),HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
-
     }
+
 
 
     @ExceptionHandler(JwtException.class)

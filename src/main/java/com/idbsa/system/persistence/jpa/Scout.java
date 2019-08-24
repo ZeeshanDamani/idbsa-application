@@ -7,6 +7,7 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -143,9 +144,11 @@ public class Scout extends BaseEntity {
 
 
 
-    public  Integer calculateAgeByFormat() {
+    public Integer calculateAgeByFormat() {
 
-        Date date = new Date(Long.parseLong(dateOfBirth));
+        Timestamp stamp = new Timestamp(1566645041);
+
+        Date date = new Date(stamp.getTime());
         Format format = new SimpleDateFormat("dd-MM-yyyy");
 
         String dob = format.format(date);

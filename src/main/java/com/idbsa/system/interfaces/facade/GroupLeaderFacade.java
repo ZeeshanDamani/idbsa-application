@@ -47,18 +47,26 @@ public class GroupLeaderFacade {
     public GroupLeader addGroupLeader(GroupLeaderDto groupLeaderDto){
 
         try {
+            List<GroupLeader> groupLeaders = groupLeaderService.findByCnic(groupLeaderDto.getCnic());
+            if(!groupLeaders.isEmpty() && !groupLeaders.get(0).getCnic().equals("")){
+               throw  ApplicationException.builder().appMessage(IdbsaErrorType.LEADER_CNIC_ALREADY_EXIST.getAppMessage())
+                       .appCode(IdbsaErrorType.LEADER_CNIC_ALREADY_EXIST.getAppCode()).build();
+            }
             Rank leaderRank = rankService.getById(groupLeaderDto.getLeaderRankId());
             if (leaderRank == null) {
                 log.error("Rank Id is Invald {} ", groupLeaderDto.getLeaderRankId());
+                throw new ApplicationException(IdbsaErrorType.RANK_NOT_FOUND);
             }
             LeaderBadge leaderQualification = leaderBadgesService.findById(groupLeaderDto.getLeaderQualificationId());
             if (leaderQualification == null) {
                 log.error("Leader Qualification Id is Invald {} ", groupLeaderDto.getLeaderQualificationId());
+                throw new ApplicationException(IdbsaErrorType.LEADER_QUALIFICATION_NOT_FOUND);
             }
             Group leaderGroup = groupService.findById(groupLeaderDto.getGroupId());
 
             if (leaderGroup == null) {
                 log.error("Leader Group Id  is Invald {} ", groupLeaderDto.getGroupId());
+                throw new ApplicationException(IdbsaErrorType.GROUP_LEADER_NOT_FOUND);
             }
 
             return groupLeaderService.create(groupLeaderDto, leaderGroup, leaderRank, leaderQualification);
@@ -70,12 +78,18 @@ public class GroupLeaderFacade {
 
     public GroupLeader update(GroupLeaderDto groupLeaderUpdateDto, Integer leaderId){
 
-        Rank leaderRank = rankService.getById(groupLeaderUpdateDto.getLeaderRankId());
+        List<GroupLeader> groupLeaders = groupLeaderService.findByCnic(groupLeaderUpdateDto.getCnic());
+        GroupLeader groupLeader = groupLeaderService.findById(leaderId);
 
+        if(!groupLeaders.isEmpty() && groupLeaders.get(0).getCnic() != groupLeader.getCnic() && !groupLeader.getCnic().equals("")){
+            throw  ApplicationException.builder().appMessage(IdbsaErrorType.LEADER_CNIC_ALREADY_EXIST.getAppMessage())
+                    .appCode(IdbsaErrorType.LEADER_CNIC_ALREADY_EXIST.getAppCode()).build();
+        }
+
+        Rank leaderRank = rankService.getById(groupLeaderUpdateDto.getLeaderRankId());
         if(leaderRank == null){
             throw new ApplicationException(IdbsaErrorType.RANK_NOT_FOUND);
         }
-        GroupLeader groupLeader = groupLeaderService.findById(leaderId);
 
         LeaderBadge leaderQualification = leaderBadgesService.findById(groupLeaderUpdateDto.getLeaderQualificationId());
 

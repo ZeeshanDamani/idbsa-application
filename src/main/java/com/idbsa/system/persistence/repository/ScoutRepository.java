@@ -15,4 +15,6 @@ public interface ScoutRepository extends JpaRepository<Scout,Integer> {
     List<Scout> findByGroupId(Integer groupId);
 
     Integer countBySectionIdAndGroupId(Integer sectionId, Integer groupId);
+
+    List<Scout> findByCnic(String cnic);
 }

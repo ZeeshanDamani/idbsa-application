@@ -1,7 +1,6 @@
 package com.idbsa.system.security.configuration;
 
 
-import com.idbsa.system.security.Filters.JwtConfigurer;
 import com.idbsa.system.security.Filters.JwtTokenProvider;
 import com.idbsa.system.security.UserAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,13 +38,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.cors().and()
                 .csrf()
                 .disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/api/public/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .apply(new JwtConfigurer(jwtTokenProvider));
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         //https://www.callicoder.com/spring-boot-spring-security-jwt-mysql-react-app-part-2/ enabling cors
     }
 
