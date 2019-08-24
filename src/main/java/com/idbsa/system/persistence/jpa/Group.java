@@ -40,4 +40,8 @@ public class Group extends NamedEntity {
     @JsonBackReference
     Jurisdiction jurisdiction;
 
+    @JoinColumn(name="city_id")
+    @ManyToOne
+    City city;
+
 }

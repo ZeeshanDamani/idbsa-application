@@ -14,4 +14,5 @@ public class GroupDto {
     private Integer jurisdictionId;
     private Integer districtId;
     private String jamatkhana;
+    private Integer cityId;
 }

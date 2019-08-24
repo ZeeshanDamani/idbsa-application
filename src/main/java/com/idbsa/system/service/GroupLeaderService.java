@@ -3,10 +3,7 @@ package com.idbsa.system.service;
 import com.idbsa.system.exception.ApplicationException;
 import com.idbsa.system.exception.error.IdbsaErrorType;
 import com.idbsa.system.interfaces.rest.dto.GroupLeaderDto;
-import com.idbsa.system.persistence.jpa.Group;
-import com.idbsa.system.persistence.jpa.GroupLeader;
-import com.idbsa.system.persistence.jpa.LeaderBadge;
-import com.idbsa.system.persistence.jpa.Rank;
+import com.idbsa.system.persistence.jpa.*;
 import com.idbsa.system.persistence.repository.GroupLeaderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -102,6 +99,11 @@ public class GroupLeaderService {
         groupLeader.setLeaderAcademicQualification(groupLeaderUpdateDto.getEducationalQualification());
         groupLeader = groupLeaderRepository.save(groupLeader);
         return groupLeader;
+    }
+
+    public GroupLeader activate(GroupLeader groupLeader){
+        groupLeader.setActive(!groupLeader.isActive());
+        return groupLeaderRepository.save(groupLeader);
     }
 
 

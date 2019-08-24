@@ -2,6 +2,8 @@ package com.idbsa.system.interfaces.controller;
 
 
 import com.idbsa.system.exception.ApiResponse;
+import com.idbsa.system.exception.ApplicationException;
+import com.idbsa.system.exception.error.IdbsaErrorType;
 import com.idbsa.system.interfaces.facade.ScoutFacade;
 import com.idbsa.system.interfaces.rest.ResponseMessages;
 import com.idbsa.system.interfaces.rest.dto.ScoutDto;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/scout")
@@ -47,7 +50,7 @@ public class ScoutController {
     }
 
     @PostMapping(value = "/{scoutId}")
-    public ResponseEntity<ApiResponse> updateeScout(@RequestBody ScoutUpdateDto scoutUpdateDto, @PathVariable Integer scoutId){
+    public ResponseEntity<ApiResponse> updateScout(@RequestBody ScoutUpdateDto scoutUpdateDto, @PathVariable Integer scoutId){
         scoutFacade.updateScout(scoutUpdateDto,scoutId);
         return new  ResponseEntity<>(ApiResponse.builder()
                 .timestamp(System.currentTimeMillis())
@@ -58,8 +61,35 @@ public class ScoutController {
                 HttpStatus.OK);
     }
 
-    @GetMapping("/{groupId}/{scoutId}")
-    public void promoteUnit(@RequestBody ScoutPromotionDto scoutPromotionDto){
+    @PostMapping("/promote/{groupId}/{scoutId}")
+    public ResponseEntity<ApiResponse> promoteUnit(@RequestBody ScoutPromotionDto scoutPromotionDto){
+        scoutFacade.promoteScoutToNewSection(scoutPromotionDto);
+        return new  ResponseEntity<>(ApiResponse.builder()
+                .timestamp(System.currentTimeMillis())
+                .message(ResponseMessages.SCOUT_UPDATED.getMessage())
+                .responseCode(HttpStatus.OK.value())
+                .success(true)
+                .build(),
+                HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/activate/{scoutId}")
+    public ResponseEntity<ApiResponse> changeActiveType(@PathVariable Integer scoutId){
+        Scout scout = scoutFacade.activate(scoutId);
+        if(Objects.nonNull(scout)){
+            return new  ResponseEntity<>(ApiResponse.builder()
+                    .timestamp(System.currentTimeMillis())
+                    .message(ResponseMessages.SCOUT_ACTIVE.getMessage() + " " + scout.isActive())
+                    .responseCode(HttpStatus.CREATED.value())
+                    .success(true)
+                    .build(),
+                    HttpStatus.OK);
+        } else {
+            throw new ApplicationException().builder()
+                    .appMessage(IdbsaErrorType.UNABLE_TO_TRANSFER.getAppMessage())
+                    .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
+        }
 
     }
 

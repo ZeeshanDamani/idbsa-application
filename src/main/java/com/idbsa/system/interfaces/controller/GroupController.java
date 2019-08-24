@@ -3,7 +3,7 @@ package com.idbsa.system.interfaces.controller;
 
 import com.idbsa.system.interfaces.facade.GroupFacade;
 import com.idbsa.system.interfaces.rest.dto.GroupDto;
-import com.idbsa.system.interfaces.rest.dto.GroupSummaryDto;
+import com.idbsa.system.interfaces.rest.dto.UnitSummaryDto;
 import com.idbsa.system.interfaces.rest.dto.GroupUpdateDto;
 import com.idbsa.system.persistence.jpa.Group;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class GroupController {
     }
 
     @PostMapping(value = "/summary/{groupId}")
-    public  ResponseEntity<List<GroupSummaryDto> > getSummaryByGroupId(@PathVariable Integer groupId){
+    public  ResponseEntity<List<UnitSummaryDto> > getSummaryByGroupId(@PathVariable Integer groupId){
         return new ResponseEntity<>(groupFacade.getSummaryByGroupId(groupId),HttpStatus.OK);
     }
 }

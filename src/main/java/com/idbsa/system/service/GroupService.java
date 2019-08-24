@@ -3,12 +3,9 @@ package com.idbsa.system.service;
 import com.idbsa.system.exception.ApplicationException;
 import com.idbsa.system.exception.error.IdbsaErrorType;
 import com.idbsa.system.interfaces.rest.dto.GroupDto;
-import com.idbsa.system.interfaces.rest.dto.GroupSummaryDto;
+import com.idbsa.system.interfaces.rest.dto.UnitSummaryDto;
 import com.idbsa.system.interfaces.rest.dto.GroupUpdateDto;
-import com.idbsa.system.persistence.jpa.District;
-import com.idbsa.system.persistence.jpa.Group;
-import com.idbsa.system.persistence.jpa.Jurisdiction;
-import com.idbsa.system.persistence.jpa.Section;
+import com.idbsa.system.persistence.jpa.*;
 import com.idbsa.system.persistence.repository.GroupLeaderRepository;
 import com.idbsa.system.persistence.repository.GroupRepository;
 import com.idbsa.system.persistence.repository.ScoutRepository;
@@ -35,6 +32,9 @@ public class GroupService {
     @Autowired
     SectionRepository sectionRepository;
 
+    @Autowired
+    ScoutService scoutService;
+
     public List<Group> findAll(){
         return groupRepository.findAll();
     }
@@ -43,20 +43,37 @@ public class GroupService {
         return groupRepository.findOne(grougId);
     }
 
-    public List<GroupSummaryDto> getGroupSummary(Integer groupId) {
+    public List<UnitSummaryDto> getGroupSummary(Integer groupId) {
 
-        List<GroupSummaryDto> groupSummaryDtoList = new ArrayList<>();
+        List<UnitSummaryDto> unitSummaryDtoList = new ArrayList<>();
         List<Section> sections = sectionRepository.findAll();
 
-        for (int i = 0; i < sections.size(); i++) {
-            groupSummaryDtoList.add(GroupSummaryDto.builder().sectionName(sections.get(i).getName()).
-                    totalCount(scoutRepository.countBySectionIdAndGroupId(sections.get(i).getId(),
-                            groupId)).build());
+        for (Section section : sections) {
+            Integer totalCountInSection = scoutRepository.countBySectionIdAndGroupId(section.getId(),
+                    groupId);
+            Integer overAgeCountForSection = scoutService.findOverAgeCountByGroup(groupId, section.getId());
+
+            double totalUnits = totalCountInSection / section.getScoutsPerunit();
+
+            if(totalUnits == 0 && totalCountInSection != 0 ){
+                totalUnits = 1;
+            } else {
+                Integer actual = totalCountInSection;
+                double extra = totalCountInSection  - actual;
+                totalUnits =  extra > 0.7 ? Math.round(totalUnits) : actual;
+            }
+
+            unitSummaryDtoList.add(UnitSummaryDto.builder().sectionName(section.getName()).
+                    totalCount(totalCountInSection)
+                    .totalUnits(totalUnits)
+                    .totalFees((int)totalUnits * section.getBasicFees())
+                    .totalOverage(overAgeCountForSection)
+                    .build());
         }
-        groupSummaryDtoList.add(GroupSummaryDto.builder().sectionName("Leaders").
+        unitSummaryDtoList.add(UnitSummaryDto.builder().sectionName("Leaders").
                 totalCount(groupLeaderRepository.countByGroupId(groupId))
                 .build());
-        return groupSummaryDtoList;
+        return unitSummaryDtoList;
     }
 
     public List<Group> findByJurisdiction(Integer jurisdictionId){
@@ -67,7 +84,7 @@ public class GroupService {
         return groups;
     }
 
-    public Group save(GroupDto groupDto, District district, Jurisdiction jurisdiction){
+    public Group save(GroupDto groupDto, District district, Jurisdiction jurisdiction, City city){
         Group group = new Group();
 
         group.setName(groupDto.getName());
@@ -76,6 +93,7 @@ public class GroupService {
         group.setDistrict(district);
         group.setJurisdiction(jurisdiction);
         group.setJamatKhana(groupDto.getJamatkhana());
+        group.setCity(city);
 
         return groupRepository.save(group);
     }

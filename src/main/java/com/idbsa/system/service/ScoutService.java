@@ -1,7 +1,6 @@
 package com.idbsa.system.service;
 
 import com.idbsa.system.interfaces.rest.dto.ScoutDto;
-import com.idbsa.system.interfaces.rest.dto.ScoutPromotionDto;
 import com.idbsa.system.interfaces.rest.dto.ScoutUpdateDto;
 import com.idbsa.system.persistence.jpa.*;
 import com.idbsa.system.persistence.repository.ScoutRepository;
@@ -24,15 +23,20 @@ public class ScoutService {
         return scoutRepository.findAll();
     }
     public Scout findById(Integer scoutId){
-        return scoutRepository.findOne(scoutId);
+        Scout scout =  scoutRepository.findOne(scoutId);
+        scout.calculateAgeByFormat();
+        scout.calcualteYearsofService();
+        scout.checkIsOverAge();
+        return scout;
     }
 
     public List<Scout> findByGroupId(Integer groupId){
-        return scoutRepository.findByGroupId(groupId);
+
+        return calculateUnpersistedData(scoutRepository.findByGroupId(groupId));
     }
 
     public List<Scout> findByGroupIdAndSectionId(Integer groupId, Integer sectionId){
-        return scoutRepository.findByGroupIdAndSectionId(groupId, sectionId);
+        return calculateUnpersistedData(scoutRepository.findByGroupIdAndSectionId(groupId, sectionId));
     }
 
     public Scout create(ScoutDto scoutDto, Group group, Section section, RankBadge rankBadge, Rank rank){
@@ -55,11 +59,18 @@ public class ScoutService {
         scout.setImageUrl(scoutDto.getScoutImageUrl());
         scout.setNicImageUrl(scoutDto.getScoutNicImageUrl());
         scout.setBloodGroup(scoutDto.getBloodGroup());
+        scout.setAcademicQualification(scoutDto.getAcademicQualification());
         scout.setEmailAddress(scoutDto.getEmailAddress());
         scout.setRank(rank);
 
-        return scoutRepository.save(scout);
-
+        Scout createdScout =  scoutRepository.save(scout);
+        District district = createdScout.getGroup().getDistrict();
+        City city = createdScout.getGroup().getCity();
+        String grNumber =  district.getCode()+ "-" +city.getCode()
+                +"-"+createdScout.getGroup().getCode()+"-"+createdScout.getSection().getCode()
+                +"-"+scout.getId();
+        createdScout.setGrNumber(grNumber);
+        return scoutRepository.save(createdScout);
     }
 
     public Scout update(ScoutUpdateDto scoutUpdateDto, Scout fetchedScout, Group group, Section section, RankBadge rankBadge, Rank rank){
@@ -83,19 +94,41 @@ public class ScoutService {
         fetchedScout.setBloodGroup(scoutUpdateDto.getBloodGroup());
         fetchedScout.setRank(rank);
         fetchedScout.setEmailAddress(scoutUpdateDto.getEmailAddress());
+        fetchedScout.setAcademicQualification(scoutUpdateDto.getAcademicQualification());
 
         return scoutRepository.save(fetchedScout);
     }
 
 
-    public Scout promotion(ScoutPromotionDto scoutPromotionDto, Scout scout, Section section){
+    public Scout promoteScout(Scout scout){
 
-       scout.setSection(section);
-       scout.setScoutQualification(section.getBasicRankBadge());
+       scout.setScoutQualification(scout.getSection().getBasicRankBadge());
        return scoutRepository.save(scout);
     }
 
+    private List<Scout> calculateUnpersistedData(List<Scout> scouts){
+        for(Scout scout : scouts){
+            scout.calculateAgeByFormat();
+            scout.calcualteYearsofService();
+            scout.checkIsOverAge();
+        }
+        return scouts;
+    }
 
 
+    public Scout activate(Scout scout){
+        scout.setActive(!scout.isActive());
+        return scoutRepository.save(scout);
+    }
+
+    public int findOverAgeCountByGroup(Integer groupId, Integer sectionId){
+
+        List<Scout> scouts = scoutRepository.findByGroupIdAndSectionId(groupId, sectionId);
+        int overAgeCount = 0;
+        for(Scout scout : scouts){
+            overAgeCount = scout.checkIsOverAge() == true ? overAgeCount++ : overAgeCount;
+        }
+        return overAgeCount;
+    }
 
 }

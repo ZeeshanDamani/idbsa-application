@@ -29,4 +29,5 @@ public class ScoutUpdateDto {
     private String bloodGroup;
     private Integer scoutRankId;
     private String emailAddress;
+    private String academicQualification;
 }

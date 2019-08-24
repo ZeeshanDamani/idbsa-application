@@ -1,11 +1,14 @@
 package com.idbsa.system.interfaces.facade;
 
+import com.idbsa.system.exception.ApplicationException;
+import com.idbsa.system.exception.error.IdbsaErrorType;
 import com.idbsa.system.interfaces.rest.dto.ScoutDto;
 import com.idbsa.system.interfaces.rest.dto.ScoutPromotionDto;
 import com.idbsa.system.interfaces.rest.dto.ScoutUpdateDto;
 import com.idbsa.system.persistence.jpa.*;
 import com.idbsa.system.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -65,10 +68,23 @@ public class ScoutFacade {
     }
 
 
-    public Scout updateScoutSection(ScoutPromotionDto scoutPromotionDto, int groupId){
+    public Scout promoteScoutToNewSection(ScoutPromotionDto scoutPromotionDto) {
         Section section = sectionService.findById(scoutPromotionDto.getNewSectionId());
         Scout scout = scoutService.findById(scoutPromotionDto.getScoutId());
-
-        return scoutService.promotion(scoutPromotionDto, scout, section);
+        scout.calculateAgeByFormat();
+        if (scout.getAge() >= section.getMinimumAge() && scout.getAge() <= section.getMaximumAge()) {
+            scout.setSection(section);
+            return scoutService.promoteScout(scout);
+        } else {
+            throw new ApplicationException().builder()
+                    .appMessage(IdbsaErrorType.UNABLE_TO_TRANSFER.getAppMessage())
+                    .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
+        }
     }
+        public Scout activate(Integer scoutId){
+            Scout scout = scoutService.findById(scoutId);
+
+            return scoutService.activate(scout);
+        }
 }

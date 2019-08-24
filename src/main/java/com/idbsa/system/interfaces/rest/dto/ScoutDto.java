@@ -28,4 +28,5 @@ public class ScoutDto {
     private Integer scoutRankId;
     private String emailAddress;
     private String bloodGroup;
+    private String academicQualification;
 }

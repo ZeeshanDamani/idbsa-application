@@ -12,7 +12,10 @@ public enum IdbsaErrorType {
     SCOUT_QUALIFICATION_NOT_FOUND(6, "Invalid Scout Qualification Id"),
     ENTITY_NOT_FOUND(7, "Invalid Id"),
     NOT_AUTHORIZE(8, "Authorization Error"),
-    INVALID_CREDENTIALS(8, "Invalid Credentials");
+    INVALID_CREDENTIALS(9, "Invalid Credentials"),
+    UNABLE_TO_TRANSFER(10, "Unable to transfer due to age"),
+    UNABLE_TO_ACTIVATE(11, "Unable to set Active");
+
 
 
     private int code;

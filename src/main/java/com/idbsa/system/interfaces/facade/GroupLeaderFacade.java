@@ -4,10 +4,7 @@ package com.idbsa.system.interfaces.facade;
 import com.idbsa.system.exception.ApplicationException;
 import com.idbsa.system.exception.error.IdbsaErrorType;
 import com.idbsa.system.interfaces.rest.dto.GroupLeaderDto;
-import com.idbsa.system.persistence.jpa.Group;
-import com.idbsa.system.persistence.jpa.GroupLeader;
-import com.idbsa.system.persistence.jpa.LeaderBadge;
-import com.idbsa.system.persistence.jpa.Rank;
+import com.idbsa.system.persistence.jpa.*;
 import com.idbsa.system.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.SQLGrammarException;
@@ -95,6 +92,12 @@ public class GroupLeaderFacade {
         return groupLeaderService.update(groupLeaderUpdateDto, groupLeader, leaderGroup, leaderRank,
                 leaderQualification);
 
+    }
+
+    public GroupLeader activate(Integer leaderId){
+        GroupLeader groupLeader = groupLeaderService.findById(leaderId);
+
+        return groupLeaderService.activate(groupLeader);
     }
 
     //:TODO Find by JurisdictionId

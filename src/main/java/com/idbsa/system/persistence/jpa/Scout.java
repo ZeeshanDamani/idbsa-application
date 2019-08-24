@@ -1,15 +1,14 @@
 package com.idbsa.system.persistence.jpa;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.idbsa.system.persistence.jpa.BaseEntity.BaseEntity;
 import lombok.*;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.sql.Date;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -51,7 +50,6 @@ public class Scout extends BaseEntity {
 
     @JoinColumn(name = "last_scout_qualification_id")
     @ManyToOne
-    @JsonBackReference
     private RankBadge scoutQualification;
 
     @Column(name = "date_of_joining")
@@ -75,9 +73,6 @@ public class Scout extends BaseEntity {
     @Column(name = "updated_at")
     private Long updatedTime;
 
-    @Column(name = "age")
-    private int age;
-
     @Column(name = "blood_group")
     private String bloodGroup;
 
@@ -93,6 +88,24 @@ public class Scout extends BaseEntity {
 
     @Column(name = "email_address")
     private String emailAddress;
+
+    @Column(name = "academic_qualification")
+    private String academicQualification;
+
+    @Transient
+    private int age;
+
+    @Transient
+    private int totalServiceInYears;
+
+    @Transient
+    private boolean isOverAge = false;
+
+    @Transient
+    private String actualDateOfJoin;
+
+    @Transient
+    private String actualDateOfBirth;
 
     public static boolean validateCnic(String cnic) {
         if (StringUtils.hasLength(cnic) &&
@@ -131,12 +144,44 @@ public class Scout extends BaseEntity {
 
 
     public  Integer calculateAgeByFormat() {
+
+        Date date = new Date(Long.parseLong(dateOfBirth));
+        Format format = new SimpleDateFormat("dd-MM-yyyy");
+
+        String dob = format.format(date);
+        this.actualDateOfBirth = dob;
         //format should be dd/mm/yyyy
-        String[] ddmmyyyFormat = this.dateOfBirth.split("/");
+        String[] ddmmyyyFormat = dob.split("-");
         LocalDate birthDate = LocalDate.of(Integer.parseInt(ddmmyyyFormat[2]), Integer.parseInt(ddmmyyyFormat[1]),
                 Integer.parseInt(ddmmyyyFormat[0]));
         this.age = calculateAge(birthDate);
         return age;
+    }
+
+
+
+    public  Integer calcualteYearsofService() {
+
+        Date date = new Date(Long.parseLong(dateOfJoining));
+        Format format = new SimpleDateFormat("dd-MM-yyyy");
+
+        String dob = format.format(date);
+        this.actualDateOfJoin = dob;
+        //format should be dd/mm/yyyy
+        String[] ddmmyyyFormat = dob.split("-");
+        LocalDate birthDate = LocalDate.of(Integer.parseInt(ddmmyyyFormat[2]), Integer.parseInt(ddmmyyyFormat[1]),
+                Integer.parseInt(ddmmyyyFormat[0]));
+        this.totalServiceInYears = calculateAge(birthDate);
+        return totalServiceInYears;
+    }
+
+
+    public boolean checkIsOverAge() {
+
+        if(age > this.section.getMaximumAge()) {
+            this.isOverAge = true;
+        }
+        return this.isOverAge;
     }
 
     public  int calculateAge(LocalDate birthDate) {
