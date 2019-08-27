@@ -7,7 +7,6 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -146,36 +145,41 @@ public class Scout extends BaseEntity {
 
     public Integer calculateAgeByFormat() {
 
-        Timestamp stamp = new Timestamp(1566645041);
 
-        Date date = new Date(stamp.getTime());
-        Format format = new SimpleDateFormat("dd-MM-yyyy");
+        if(!StringUtils.isEmpty(dateOfBirth)) {
+            Date date = new Date(Long.parseLong(dateOfBirth));
+            Format format = new SimpleDateFormat("dd-MM-yyyy");
 
-        String dob = format.format(date);
-        this.actualDateOfBirth = dob;
-        //format should be dd/mm/yyyy
-        String[] ddmmyyyFormat = dob.split("-");
-        LocalDate birthDate = LocalDate.of(Integer.parseInt(ddmmyyyFormat[2]), Integer.parseInt(ddmmyyyFormat[1]),
-                Integer.parseInt(ddmmyyyFormat[0]));
-        this.age = calculateAge(birthDate);
-        return age;
+            String dob = format.format(date);
+            this.actualDateOfBirth = dob;
+            //format should be dd/mm/yyyy
+            String[] ddmmyyyFormat = dob.split("-");
+            LocalDate birthDate = LocalDate.of(Integer.parseInt(ddmmyyyFormat[2]), Integer.parseInt(ddmmyyyFormat[1]),
+                    Integer.parseInt(ddmmyyyFormat[0]));
+            this.age = calculateAge(birthDate);
+            return age;
+        }
+        return 0;
     }
 
 
 
     public  Integer calcualteYearsofService() {
 
-        Date date = new Date(Long.parseLong(dateOfJoining));
-        Format format = new SimpleDateFormat("dd-MM-yyyy");
+        if(!StringUtils.isEmpty(dateOfJoining)) {
+            Date date = new Date(Long.parseLong(dateOfJoining));
+            Format format = new SimpleDateFormat("dd-MM-yyyy");
 
-        String dob = format.format(date);
-        this.actualDateOfJoin = dob;
-        //format should be dd/mm/yyyy
-        String[] ddmmyyyFormat = dob.split("-");
-        LocalDate birthDate = LocalDate.of(Integer.parseInt(ddmmyyyFormat[2]), Integer.parseInt(ddmmyyyFormat[1]),
-                Integer.parseInt(ddmmyyyFormat[0]));
-        this.totalServiceInYears = calculateAge(birthDate);
-        return totalServiceInYears;
+            String dob = format.format(date);
+            this.actualDateOfJoin = dob;
+            //format should be dd/mm/yyyy
+            String[] ddmmyyyFormat = dob.split("-");
+            LocalDate birthDate = LocalDate.of(Integer.parseInt(ddmmyyyFormat[2]), Integer.parseInt(ddmmyyyFormat[1]),
+                    Integer.parseInt(ddmmyyyFormat[0]));
+            this.totalServiceInYears = calculateAge(birthDate);
+            return totalServiceInYears;
+        }
+        return 0;
     }
 
 
