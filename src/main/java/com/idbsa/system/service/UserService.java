@@ -27,7 +27,7 @@ public class UserService {
 
         User user = new User();
 
-        user.setUsername(userDto.getUserEmail());
+        user.setUsername(userDto.getUserName());
         user.setGroup(group);
         user.setEnabled(true);
         user.setExpired(false);
@@ -55,8 +55,15 @@ public class UserService {
        return null;
        }
 
+    public Optional<User> findById(Integer userId){
+        try {
+            return Optional.ofNullable(userRepository.findOne(userId));
 
-
+        }catch (Exception e ){
+            log.error(e.toString());
+        }
+        return null;
+    }
     //
 //    @Override
 //    public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {

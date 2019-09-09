@@ -6,8 +6,8 @@ import com.idbsa.system.exception.error.IdbsaErrorType;
 import com.idbsa.system.interfaces.facade.GroupLeaderFacade;
 import com.idbsa.system.interfaces.rest.ResponseMessages;
 import com.idbsa.system.interfaces.rest.dto.GroupLeaderDto;
-import com.idbsa.system.persistence.jpa.Group;
 import com.idbsa.system.persistence.jpa.GroupLeader;
+import com.idbsa.system.persistence.jpa.User;
 import com.idbsa.system.security.AuthenticationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,14 +40,7 @@ public class GroupLeaderController {
     public ResponseEntity<ApiResponse> addGroupLeader(@RequestHeader String authorization,
                                                       @RequestHeader Integer groupID,
                                                       @RequestBody GroupLeaderDto groupLeaderDto){
-        Group group = authenticationService.authenticateUuser(authorization);
-        if(!group.getId().equals(groupID)) {
-            log.info("Authentication Error for user of group Id of request {} with invalid credentials {}",groupID,
-                    group.getId());
-            throw ApplicationException.builder().appMessage(IdbsaErrorType.INVALID_USER.getAppMessage())
-                    .appCode(IdbsaErrorType.INVALID_USER.getAppCode())
-                    .build();
-        }
+        User authenticateUser  =  authenticationService.authenticateUser(authorization);
         log.info("Adding Leader {} for group Id {}" , groupLeaderDto , groupID);
         groupLeaderFacade.addGroupLeader(groupLeaderDto);
         return new  ResponseEntity<>(ApiResponse.builder()
@@ -64,14 +57,8 @@ public class GroupLeaderController {
                                                          @RequestHeader Integer groupID,
                                                          @RequestBody GroupLeaderDto groupLeaderUpdateDto,
                                                          @PathVariable Integer leaderId){
-        Group group = authenticationService.authenticateUuser(authorization);
-        if(!group.getId().equals(groupID)) {
-            log.info("Authentication Error for user of group Id of request {} with invalid credentials {}",groupID,
-                    group.getId());
-            throw ApplicationException.builder().appMessage(IdbsaErrorType.INVALID_USER.getAppMessage())
-                    .appCode(IdbsaErrorType.INVALID_USER.getAppCode())
-                    .build();
-        }
+
+        User authenticateUser  =  authenticationService.authenticateUser(authorization);
         log.info("Updating Leader {} for group Id {}" , groupLeaderUpdateDto , groupID);
         groupLeaderFacade.update(groupLeaderUpdateDto, leaderId);
         return new  ResponseEntity<>(ApiResponse.builder()
@@ -87,14 +74,7 @@ public class GroupLeaderController {
     public ResponseEntity<List<GroupLeader>> findByGroupId(@RequestHeader String authorization,
                                                            @RequestHeader Integer groupID,
                                                            @PathVariable Integer groupId){
-        Group group = authenticationService.authenticateUuser(authorization);
-        if(!group.getId().equals(groupID)) {
-            log.info("Authentication Error for user of group Id of request {} with invalid credentials {}",groupID,
-                    group.getId());
-            throw ApplicationException.builder().appMessage(IdbsaErrorType.INVALID_USER.getAppMessage())
-                    .appCode(IdbsaErrorType.INVALID_USER.getAppCode())
-                    .build();
-        }
+        User authenticateUser  =  authenticationService.authenticateUser(authorization);
         log.info("getting Leaders List  for group Id {}" , groupID);
         return new ResponseEntity<>(groupLeaderFacade.findByGroupId(groupId), HttpStatus.OK);
     }
@@ -103,14 +83,7 @@ public class GroupLeaderController {
     public ResponseEntity<ApiResponse> changeActiveType(@RequestHeader String authorization,
                                                         @RequestHeader Integer groupID,
                                                         @PathVariable Integer leaderId){
-        Group group = authenticationService.authenticateUuser(authorization);
-        if(!group.getId().equals(groupID)) {
-            log.info("Authentication Error for user of group Id of request {} with invalid credentials {}",groupID,
-                    group.getId());
-            throw ApplicationException.builder().appMessage(IdbsaErrorType.INVALID_USER.getAppMessage())
-                    .appCode(IdbsaErrorType.INVALID_USER.getAppCode())
-                    .build();
-        }
+        User authenticateUser  =  authenticationService.authenticateUser(authorization);
         log.info("Setting activation for Leader id  {}  for group Id {}" , leaderId, groupID);
         GroupLeader groupLeader = groupLeaderFacade.activate(leaderId  );
         if(Objects.nonNull(groupLeader)){

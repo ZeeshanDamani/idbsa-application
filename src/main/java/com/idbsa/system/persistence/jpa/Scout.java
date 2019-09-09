@@ -92,7 +92,7 @@ public class Scout extends BaseEntity {
     @Column(name = "academic_qualification")
     private String academicQualification;
 
-    @Column(name = "ibdsa_old_code")
+    @Column(name = "idbsa_old_code")
     private String idbsaOldCode;
 
     @Transient

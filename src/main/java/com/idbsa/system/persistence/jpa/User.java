@@ -28,7 +28,6 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name ="password")
     private String password;
 
-
     private boolean isExpired;
 
     private boolean isLocked;

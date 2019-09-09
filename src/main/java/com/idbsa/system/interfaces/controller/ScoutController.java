@@ -9,8 +9,8 @@ import com.idbsa.system.interfaces.rest.ResponseMessages;
 import com.idbsa.system.interfaces.rest.dto.ScoutDto;
 import com.idbsa.system.interfaces.rest.dto.ScoutPromotionDto;
 import com.idbsa.system.interfaces.rest.dto.ScoutUpdateDto;
-import com.idbsa.system.persistence.jpa.Group;
 import com.idbsa.system.persistence.jpa.Scout;
+import com.idbsa.system.persistence.jpa.User;
 import com.idbsa.system.security.AuthenticationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,15 +37,8 @@ public class ScoutController {
     public ResponseEntity<Scout> getScoutById(@RequestHeader String authorization,
                                               @RequestHeader Integer groupID,
                                               @PathVariable Integer scoutId){
-        Group group = authenticationService.authenticateUuser(authorization);
-        if(!group.getId().equals(groupID)){
-            log.info("Authentication Error for user of group Id of request {} with invalid credentials {}",groupID,
-                    group.getId());
-            throw ApplicationException.builder().appMessage(IdbsaErrorType.INVALID_USER.getAppMessage())
-                    .appCode(IdbsaErrorType.INVALID_USER.getAppCode())
-                    .build();
-        }
 
+        User authenticateUser  =  authenticationService.authenticateUser(authorization);
         log.info("Getting Scout id  {}for group {}" , scoutId, groupID);
         return new ResponseEntity<>(scoutFacade.findById(scoutId), HttpStatus.OK);
     }
@@ -54,17 +47,9 @@ public class ScoutController {
     public ResponseEntity<List<Scout>> getScoutById(@RequestHeader String authorization, @RequestHeader Integer groupID,
                                                     @PathVariable Integer sectionId,
                                                     @PathVariable Integer groupId){
-        Group group = authenticationService.authenticateUuser(authorization);
-        if(!group.getId().equals(groupId)) {
-            log.info("Authentication Error for user of group Id of request {} with invalid credentials {}",groupID,
-                    group.getId());
-            throw ApplicationException.builder().appMessage(IdbsaErrorType.INVALID_USER.getAppMessage())
-                    .appCode(IdbsaErrorType.INVALID_USER.getAppCode())
-                    .build();
-        }
+        User authenticateUser  =  authenticationService.authenticateUser(authorization);
         log.info("Getting Scout list  for group {}" , groupID);
         return new ResponseEntity<>(scoutFacade.findByGroupIdAdndSectionId(groupId,sectionId), HttpStatus.OK);
-
     }
 
     @PostMapping
@@ -72,15 +57,7 @@ public class ScoutController {
                                                    @RequestHeader Integer groupID,
                                                    @RequestBody ScoutDto scoutDto){
 
-        Group group = authenticationService.authenticateUuser(authorization);
-        if(!group.getId().equals(scoutDto.getGroupId())) {
-            log.info("Authentication Error for user of group Id of request {} with invalid credentials {}",groupID,
-                    group.getId());
-
-            throw ApplicationException.builder().appMessage(IdbsaErrorType.INVALID_USER.getAppMessage())
-                    .appCode(IdbsaErrorType.INVALID_USER.getAppCode())
-                    .build();
-        }
+      User authenticateUser  =  authenticationService.authenticateUser(authorization);
 
         log.info("Creating  Scout {}  for group {}" , scoutDto, groupID);
         scoutFacade.createScout(scoutDto);
@@ -98,16 +75,7 @@ public class ScoutController {
                                                    @RequestBody ScoutUpdateDto scoutUpdateDto,
                                                    @PathVariable Integer scoutId){
 
-        Group group = authenticationService.authenticateUuser(authorization);
-        if(!group.getId().equals(groupID)) {
-            log.info("Authentication Error for user of group Id of request {} with invalid credentials {}",groupID,
-                    group.getId());
-
-            throw ApplicationException.builder().appMessage(IdbsaErrorType.INVALID_USER.getAppMessage())
-                    .appCode(IdbsaErrorType.INVALID_USER.getAppCode())
-                    .build();
-        }
-        log.info("Updating  Scout {}  for group {}" , scoutUpdateDto, groupID);
+        User authenticateUser  =  authenticationService.authenticateUser(authorization);log.info("Updating  Scout {}  for group {}" , scoutUpdateDto, groupID);
         scoutFacade.updateScout(scoutUpdateDto,scoutId);
         return new  ResponseEntity<>(ApiResponse.builder()
                 .timestamp(System.currentTimeMillis())
@@ -123,15 +91,7 @@ public class ScoutController {
                                                    @RequestHeader Integer groupID,
                                                    @RequestBody ScoutPromotionDto scoutPromotionDto){
 
-        Group group = authenticationService.authenticateUuser(authorization);
-        if(!group.getId().equals(groupID)) {
-            log.info("Authentication Error for user of group Id of request {} with invalid credentials {}",groupID,
-                    group.getId());
-
-            throw ApplicationException.builder().appMessage(IdbsaErrorType.INVALID_USER.getAppMessage())
-                    .appCode(IdbsaErrorType.INVALID_USER.getAppCode())
-                    .build();
-        }
+        User authenticateUser  =  authenticationService.authenticateUser(authorization);
         scoutFacade.promoteScoutToNewSection(scoutPromotionDto);
         return new  ResponseEntity<>(ApiResponse.builder()
                 .timestamp(System.currentTimeMillis())
@@ -146,12 +106,7 @@ public class ScoutController {
     public ResponseEntity<ApiResponse> changeActiveType(@RequestHeader String authorization,
                                                         @RequestHeader Integer groupID,
                                                         @PathVariable Integer scoutId){
-        Group group = authenticationService.authenticateUuser(authorization);
-        if(!group.getId().equals(groupID)) {
-            throw ApplicationException.builder().appMessage(IdbsaErrorType.INVALID_USER.getAppMessage())
-                    .appCode(IdbsaErrorType.INVALID_USER.getAppCode())
-                    .build();
-        }
+        User authenticateUser  =  authenticationService.authenticateUser(authorization);
         Scout scout = scoutFacade.activate(scoutId);
         if(Objects.nonNull(scout)){
             return new  ResponseEntity<>(ApiResponse.builder()
