@@ -29,4 +29,6 @@ public class ScoutDto {
     private String emailAddress;
     private String bloodGroup;
     private String academicQualification;
+    private String idbsaOldCode;
+
 }

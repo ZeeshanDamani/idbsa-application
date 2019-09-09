@@ -72,6 +72,7 @@ public class ScoutService {
         scout.setAcademicQualification(scoutDto.getAcademicQualification());
         scout.setEmailAddress(scoutDto.getEmailAddress());
         scout.setRank(rank);
+        scout.setIdbsaOldCode(scoutDto.getIdbsaOldCode());
 
         Scout createdScout =  scoutRepository.save(scout);
         District district = createdScout.getGroup().getDistrict();
@@ -105,6 +106,7 @@ public class ScoutService {
         fetchedScout.setRank(rank);
         fetchedScout.setEmailAddress(scoutUpdateDto.getEmailAddress());
         fetchedScout.setAcademicQualification(scoutUpdateDto.getAcademicQualification());
+        fetchedScout.setIdbsaOldCode(scoutUpdateDto.getIdbsaOldCode());
 
         return scoutRepository.save(fetchedScout);
     }

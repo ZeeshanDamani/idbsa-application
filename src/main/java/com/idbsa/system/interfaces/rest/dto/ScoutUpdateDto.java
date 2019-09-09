@@ -30,4 +30,5 @@ public class ScoutUpdateDto {
     private Integer scoutRankId;
     private String emailAddress;
     private String academicQualification;
+    private String idbsaOldCode;
 }
