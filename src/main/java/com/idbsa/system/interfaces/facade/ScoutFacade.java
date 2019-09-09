@@ -60,7 +60,9 @@ public class ScoutFacade {
 
         Section section = sectionService.findById(scoutDto.getSectionId());
         Group group = groupService.findById(scoutDto.getGroupId());
-        RankBadge rankBadge = rankBadgesService.findById(scoutDto.getScoutQualificationId());
+
+        RankBadge rankBadge = scoutDto.getScoutQualificationId() == null ?
+                null : rankBadgesService.findById(scoutDto.getScoutQualificationId());
         Rank rank  = rankService.getById(scoutDto.getScoutRankId());
 
 
