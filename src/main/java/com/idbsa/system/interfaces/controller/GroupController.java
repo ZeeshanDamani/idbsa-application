@@ -67,4 +67,6 @@ public class GroupController {
         User authenticateUser  =  authenticationService.authenticateUser(authorization);
         return new ResponseEntity<>(groupFacade.getSummaryByGroupId(groupId),HttpStatus.OK);
     }
+
+
 }

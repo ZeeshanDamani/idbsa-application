@@ -42,6 +42,9 @@ public class JwtTokenProvider {
         claims.put("userId" , user.getId());
         claims.put("user" , user.getUsername());
         claims.put("groupId" , user.getGroup().getId());
+        claims.put("jurisdictionId" , user.getGroup().getJurisdiction().getId());
+        claims.put("jurisdictionName" , user.getGroup().getJurisdiction().getName());
+
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 

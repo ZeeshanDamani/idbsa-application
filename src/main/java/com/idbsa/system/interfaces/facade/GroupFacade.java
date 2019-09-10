@@ -45,6 +45,10 @@ public class GroupFacade {
         return groupService.getGroupSummary(groupId);
     }
 
+    public List<UnitSummaryDto>  getOverallSummary(Integer groupId){
+        return groupService.getGroupSummary(groupId);
+    }
+
 
     public Group addGroup(GroupDto groupDto){
         District district;

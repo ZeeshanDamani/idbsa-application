@@ -10,12 +10,10 @@ import lombok.Data;
 @JsonIgnoreProperties
 @Data
 @Builder
-public class UnitSummaryDto {
+public class JurisdictionSummaryDto {
 
-
+    String jurisdictionName;
+    Integer jurisdictionId;
     String sectionName;
     Integer totalCount;
-    Double totalUnits;
-    Integer totalFees;
-    Integer totalOverage;
 }
