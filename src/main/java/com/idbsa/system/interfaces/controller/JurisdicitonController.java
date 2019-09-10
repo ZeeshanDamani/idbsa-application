@@ -21,6 +21,7 @@ import java.util.List;
 @RestController()
 @RequestMapping("/api/jurisdictions")
 @Slf4j
+@CrossOrigin
 public class JurisdicitonController {
 
     @Autowired
